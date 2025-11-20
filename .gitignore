@@ -1,0 +1,17 @@
+# In the root folder, open .gitignore and paste:
+
+# Dependencies
+/node_modules
+/contracts/node_modules
+/frontend/node_modules
+
+# Configuration and Keys
+.env
+*.env
+.env.*
+.DS_Store
+
+# Compiled/Local Data
+/contracts/artifacts
+/contracts/cache
+/frontend/dist
