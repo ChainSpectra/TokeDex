@@ -1,7 +1,5 @@
 import { expect } from "chai";
-import { network } from "hardhat";
-
-const { ethers } = await network.connect();
+import { ethers } from "hardhat";
 
 describe("Counter", function () {
   it("Should emit the Increment event when calling the inc() function", async function () {

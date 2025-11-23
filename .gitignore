@@ -15,3 +15,5 @@
 /contracts/artifacts
 /contracts/cache
 /frontend/dist
+/contracts/typechain-types
+/contracts/coverage
