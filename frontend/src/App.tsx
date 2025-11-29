@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { lazy, Suspense } from 'react';
+import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
+import HeroSection from './components/sections/HeroSection';
+
+// Lazy load heavy sections
+const FeaturesSection = lazy(() => import('./components/sections/FeaturesSection'));
+const ArchitectureSection = lazy(() => import('./components/sections/ArchitectureSection'));
+const PartnersSection = lazy(() => import('./components/sections/PartnersSection'));
+const TokenomicsSection = lazy(() => import('./components/sections/TokenomicsSection'));
+const RoadmapSection = lazy(() => import('./components/sections/RoadmapSection'));
+const CTASection = lazy(() => import('./components/sections/CTASection'));
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="min-h-screen bg-dark-900 text-white overflow-x-hidden">
+      <Navbar />
+      
+      <main>
+        <HeroSection />
+        <Suspense fallback={
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+          </div>
+        }>
+          <FeaturesSection />
+          <ArchitectureSection />
+          <PartnersSection />
+          <TokenomicsSection />
+          <RoadmapSection />
+          <CTASection />
+        </Suspense>
+      </main>
+
+      <Footer />
+    </div>
+  );
 }
 
-export default App
+export default App;
