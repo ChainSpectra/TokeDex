@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Wallet, Github, Smartphone, ArrowLeft } from 'lucide-react';
+import { WalletConnector } from '../WalletConnector';
 import Button from '../ui/Button';
 import { sendSignInEmail, sendWelcomeEmail, formatSignInTime, getDeviceInfo, getUserIP, sendOTPEmail, generateOTP } from '../../services/emailService';
 
@@ -9,7 +10,7 @@ interface AuthModalProps {
   onClose: () => void;
 }
 
-type AuthMode = 'login' | 'signup' | 'otp';
+type AuthMode = 'login' | 'signup' | 'otp' | 'wallet';
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [authMode, setAuthMode] = useState<AuthMode>('login');
@@ -330,45 +331,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleWalletConnect = async () => {
-    setIsLoading(true);
-    console.log('🔵 Wallet connect clicked');
-    
-    try {
-      // Simulate wallet connection
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('✅ DEMO MODE: Wallet connected');
-      localStorage.setItem('auth_token', 'demo_wallet_' + Date.now());
-      localStorage.setItem('wallet_address', '0x' + Math.random().toString(36).substring(2, 15));
-      
-      // Show success notification
-      const notification = document.createElement('div');
-      notification.textContent = '✓ Wallet connected successfully!';
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #00D4FF, #7B61FF);
-        color: white;
-        padding: 16px 24px;
-        border-radius: 12px;
-        font-weight: 600;
-        z-index: 10000;
-        box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
-      `;
-      document.body.appendChild(notification);
-      setTimeout(() => notification.remove(), 3000);
-
-      // Close modal after short delay
-      setTimeout(() => onClose(), 500);
-      
-    } catch (err) {
-      console.error('❌ Wallet connection error:', err);
-      setError('Failed to connect wallet. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleWalletConnect = () => {
+    // Switch to wallet connection mode
+    setAuthMode('wallet');
+    console.log('🔵 Switching to wallet connector');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -457,6 +423,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   <span className="gradient-text">
                     {authMode === 'otp' 
                       ? (otpSent ? 'Verify OTP' : 'Phone Login')
+                      : authMode === 'wallet'
+                      ? 'Connect Wallet'
                       : authMode === 'login' 
                       ? 'Welcome Back' 
                       : 'Create Account'}
@@ -467,13 +435,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     ? (otpSent 
                       ? `Enter the 6-digit code sent to ${formData.phone}`
                       : 'Sign in with your phone number')
+                    : authMode === 'wallet'
+                    ? 'Connect your preferred wallet to get started'
                     : authMode === 'login'
                     ? 'Sign in to access your dashboard'
                     : 'Start your journey with TokeDEx'}
                 </p>
 
                 {/* Wallet Connect Button */}
-                {authMode !== 'otp' && (
+                {authMode !== 'otp' && authMode !== 'wallet' && (
                   <Button
                     variant="primary"
                     size="lg"
@@ -616,7 +586,29 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   </form>
                 )}
 
-                {/* Email/Password Form */}
+                {/* Wallet Connection Form */}
+                {authMode === 'wallet' && (
+                  <div className="space-y-6">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-semibold text-white mb-2">Connect Your Wallet</h3>
+                      <p className="text-gray-400 text-sm">
+                        Choose your preferred wallet to connect to TokeDx
+                      </p>
+                    </div>
+                    <WalletConnector />
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={resetAuthMode}
+                        className="text-gray-400 hover:text-white text-sm transition-colors"
+                      >
+                        ← Back to login options
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Email/Password Login Form */}
                 {authMode !== 'otp' && (
                   <form onSubmit={handleSubmit} className="space-y-5">
                     {authMode === 'signup' && (
