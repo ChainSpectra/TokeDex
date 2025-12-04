@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Wallet, Github, Smartphone, ArrowLeft } from 'lucide-react';
+import { useAccount } from 'wagmi';
 import { WalletConnector } from '../WalletConnector';
+import { NetworkSwitcher } from '../NetworkSwitcher';
+import { QIEFaucet } from '../QIEFaucet';
 import Button from '../ui/Button';
 import { sendSignInEmail, sendWelcomeEmail, formatSignInTime, getDeviceInfo, getUserIP, sendOTPEmail, generateOTP } from '../../services/emailService';
 
@@ -11,6 +14,13 @@ interface AuthModalProps {
 }
 
 type AuthMode = 'login' | 'signup' | 'otp' | 'wallet';
+
+// Helper component to conditionally show faucet
+const QIEFaucetWrapper = () => {
+  const { isConnected } = useAccount();
+  if (!isConnected) return null;
+  return <QIEFaucet />;
+};
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [authMode, setAuthMode] = useState<AuthMode>('login');
@@ -56,17 +66,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       console.log(`✅ DEMO MODE: ${authMode === 'login' ? 'Login' : 'Signup'} successful`, formData);
       localStorage.setItem('auth_token', 'demo_token_' + Date.now());
       localStorage.setItem('user_email', formData.email);
       localStorage.setItem('user_name', formData.name || 'User');
-      
+
       // Send email notification
       try {
         const ipAddress = await getUserIP();
         const deviceInfo = getDeviceInfo();
-        
+
         if (authMode === 'login') {
           await sendSignInEmail({
             userName: formData.name || 'User',
@@ -89,7 +99,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       } catch (emailError) {
         console.warn('Email notification failed (non-blocking):', emailError);
       }
-      
+
       // Show success notification
       const notification = document.createElement('div');
       notification.textContent = `✓ ${authMode === 'login' ? 'Signed in' : 'Account created'} successfully! Check your email.`;
@@ -110,7 +120,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
       // Close modal after short delay
       setTimeout(() => onClose(), 500);
-      
+
     } catch (err: any) {
       console.error('❌ Auth Error:', err);
       setError(err.message || 'Authentication failed. Please try again.');
@@ -139,22 +149,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         // Generate 6-digit OTP
         const newOTP = generateOTP();
         setGeneratedOTP(newOTP);
-        
+
         console.log('🔐 Generated OTP:', newOTP);
 
         // Send OTP via email
         const emailSent = await sendOTPEmail(formData.email, newOTP);
-        
+
         if (emailSent) {
           console.log('✅ OTP email sent successfully to:', formData.email);
         } else {
           console.log('📧 DEMO MODE: OTP generated but email service not configured');
           console.log('🔐 Use this OTP to login:', newOTP);
         }
-        
+
         setOtpSent(true);
         setError('');
-        
+
         // Show notification
         const notification = document.createElement('div');
         notification.innerHTML = `✓ OTP sent to your email!<br><small>Check: ${formData.email}</small>`;
@@ -173,12 +183,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         `;
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 5000);
-        
+
       } else {
         // Verify OTP
         const otpCode = otp.join('');
         console.log('🔵 Verifying OTP:', otpCode, 'Expected:', generatedOTP);
-        
+
         if (otpCode.length !== 6) {
           setError('Please enter complete 6-digit OTP');
           setIsLoading(false);
@@ -190,7 +200,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           console.log('✅ OTP verified successfully');
           localStorage.setItem('auth_token', 'demo_token_' + Date.now());
           localStorage.setItem('user_email', formData.email);
-          
+
           // Show success notification
           const notification = document.createElement('div');
           notification.textContent = '✓ OTP verified successfully!';
@@ -226,14 +236,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleResendOTP = async () => {
     setError('');
     setIsLoading(true);
-    
+
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       console.log('🔐 DEMO MODE: OTP resent to:', formData.phone);
       console.log('🔐 DEMO OTP CODE: 123456 (use this to test)');
-      
+
       /* Uncomment when backend is ready:
       const response = await fetch('/api/auth/send-otp', {
         method: 'POST',
@@ -251,10 +261,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       const data = await response.json();
       console.log('OTP resent successfully:', data);
       */
-      
+
       setOtp(['', '', '', '', '', '']);
       setError('');
-      
+
       // Show success notification
       const notification = document.createElement('div');
       notification.textContent = '✓ OTP resent successfully! Use: 123456';
@@ -272,7 +282,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       `;
       document.body.appendChild(notification);
       setTimeout(() => notification.remove(), 3000);
-      
+
     } catch (err: any) {
       console.error('Resend OTP Error:', err);
       setError(err.message || 'Failed to resend OTP. Please try again.');
@@ -283,7 +293,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) return;
-    
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -305,25 +315,25 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleGitHubLogin = async () => {
     setIsLoading(true);
     console.log('🔵 GitHub login clicked');
-    
+
     try {
       // GitHub OAuth URL
       const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID || 'YOUR_GITHUB_CLIENT_ID';
       const REDIRECT_URI = window.location.origin + '/auth/github/callback';
       const STATE = Math.random().toString(36).substring(7); // Random state for security
-      
+
       // Store state in localStorage for verification
       localStorage.setItem('github_oauth_state', STATE);
-      
+
       // GitHub OAuth URL
       const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=user:email&state=${STATE}`;
-      
+
       console.log('🔗 Redirecting to GitHub OAuth...');
       console.log('📍 Redirect URI:', REDIRECT_URI);
-      
+
       // Redirect to GitHub OAuth
       window.location.href = githubAuthUrl;
-      
+
     } catch (err) {
       console.error('❌ GitHub OAuth error:', err);
       setError('Failed to connect with GitHub. Please try again.');
@@ -421,25 +431,25 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 {/* Title */}
                 <h2 className="text-4xl font-bold text-center mb-3">
                   <span className="gradient-text">
-                    {authMode === 'otp' 
+                    {authMode === 'otp'
                       ? (otpSent ? 'Verify OTP' : 'Phone Login')
                       : authMode === 'wallet'
-                      ? 'Connect Wallet'
-                      : authMode === 'login' 
-                      ? 'Welcome Back' 
-                      : 'Create Account'}
+                        ? 'Connect Wallet'
+                        : authMode === 'login'
+                          ? 'Welcome Back'
+                          : 'Create Account'}
                   </span>
                 </h2>
                 <p className="text-gray-400 text-center mb-10 text-base">
                   {authMode === 'otp'
-                    ? (otpSent 
+                    ? (otpSent
                       ? `Enter the 6-digit code sent to ${formData.phone}`
                       : 'Sign in with your phone number')
                     : authMode === 'wallet'
-                    ? 'Connect your preferred wallet to get started'
-                    : authMode === 'login'
-                    ? 'Sign in to access your dashboard'
-                    : 'Start your journey with TokeDEx'}
+                      ? 'Connect your preferred wallet to get started'
+                      : authMode === 'login'
+                        ? 'Sign in to access your dashboard'
+                        : 'Start your journey with TokeDEx'}
                 </p>
 
                 {/* Wallet Connect Button */}
@@ -564,10 +574,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       </div>
                     )}
 
-                    <Button 
-                      type="submit" 
-                      variant="primary" 
-                      size="lg" 
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="lg"
                       className="w-full py-4 text-lg"
                       disabled={isLoading}
                     >
@@ -586,27 +596,33 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   </form>
                 )}
 
+
                 {/* Wallet Connection Form */}
                 {authMode === 'wallet' && (
-                  <div className="space-y-6">
-                    <div className="text-center mb-6">
-                      <h3 className="text-xl font-semibold text-white mb-2">Connect Your Wallet</h3>
-                      <p className="text-gray-400 text-sm">
-                        Choose your preferred wallet to connect to TokeDx
-                      </p>
-                    </div>
+                  <div className="space-y-5">
+                    {/* Network Status - Show before connection */}
+                    <NetworkSwitcher />
+
+                    {/* Wallet Connector */}
                     <WalletConnector />
-                    <div className="text-center">
+
+                    {/* QIE Faucet - Show after connection */}
+                    <QIEFaucetWrapper />
+
+                    {/* Back Button */}
+                    <div className="text-center pt-2">
                       <button
                         type="button"
                         onClick={resetAuthMode}
-                        className="text-gray-400 hover:text-white text-sm transition-colors"
+                        className="text-gray-400 hover:text-white text-sm transition-colors inline-flex items-center gap-1"
                       >
-                        ← Back to login options
+                        <ArrowLeft size={16} />
+                        Back to login options
                       </button>
                     </div>
                   </div>
                 )}
+
 
                 {/* Email/Password Login Form */}
                 {authMode !== 'otp' && (
@@ -695,10 +711,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       </div>
                     )}
 
-                    <Button 
-                      type="submit" 
-                      variant="primary" 
-                      size="lg" 
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="lg"
                       className="w-full py-4 text-lg"
                       disabled={isLoading}
                     >
