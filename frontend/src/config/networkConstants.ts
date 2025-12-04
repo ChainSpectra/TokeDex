@@ -46,3 +46,7 @@ export const NETWORK_COLORS = {
 
 // Type exports
 export type SupportedChainId = keyof typeof NETWORK_NAMES
+
+// QTT Token and Faucet (deployed on QIE Testnet)
+export const QTT_TOKEN_ADDRESS = "0xcD7F8e44a0bEcA8003312857A3DFb8545Fdfb814"
+export const QTT_FAUCET_ADDRESS = "0x7529138a5Bc978A62d842dF6a3699af1C47087fB"

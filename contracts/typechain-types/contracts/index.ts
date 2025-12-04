@@ -6,3 +6,5 @@ export type { qieTokenCreatorSol };
 import type * as testTokenSol from "./Test_Token.sol";
 export type { testTokenSol };
 export type { Counter } from "./Counter";
+export type { QuickTestToken } from "./QuickTestToken";
+export type { TokenFaucet } from "./TokenFaucet";

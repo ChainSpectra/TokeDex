@@ -4,17 +4,23 @@ import { useAccount } from 'wagmi';
 import { WalletConnector } from '../WalletConnector';
 import { NetworkSwitcher } from '../NetworkSwitcher';
 import { QIEFaucet } from '../QIEFaucet';
+import { QTTFaucet } from '../QTTFaucet';
 
 interface WalletModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-// Helper component to conditionally show faucet
-const QIEFaucetWrapper = () => {
+// Helper component to conditionally show faucets
+const FaucetsWrapper = () => {
     const { isConnected } = useAccount();
     if (!isConnected) return null;
-    return <QIEFaucet />;
+    return (
+        <>
+            <QIEFaucet />
+            <QTTFaucet />
+        </>
+    );
 };
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
@@ -38,7 +44,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="relative w-full max-w-lg bg-dark-800 rounded-3xl border border-white/10 shadow-2xl overflow-hidden"
+                            className="relative w-full max-w-lg bg-dark-800 rounded-3xl border border-white/10 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Animated Background Gradient */}
@@ -91,8 +97,8 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
                                     {/* Wallet Connector */}
                                     <WalletConnector />
 
-                                    {/* QIE Faucet - Shows after connection */}
-                                    <QIEFaucetWrapper />
+                                    {/* Faucets - Shows after connection */}
+                                    <FaucetsWrapper />
                                 </div>
 
                                 {/* Info Footer */}
