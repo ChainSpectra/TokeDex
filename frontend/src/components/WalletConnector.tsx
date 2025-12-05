@@ -41,7 +41,9 @@ export function WalletConnector() {
       ))}
       {error && (
         <div className="text-red-400 text-sm mt-2">
-          Error: {error.message}
+          {error.message.toLowerCase().includes('user rejected')
+            ? 'Wallet connection was cancelled.'
+            : 'Could not connect wallet. Please try again.'}
         </div>
       )}
     </div>
