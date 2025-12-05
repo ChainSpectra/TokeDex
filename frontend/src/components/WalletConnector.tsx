@@ -143,14 +143,11 @@ export function WalletConnector() {
       ))}
 
       {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-red-400 text-sm text-center bg-red-400/10 border border-red-400/20 rounded-lg p-3"
-        >
-          <p className="font-medium mb-1">Connection Error</p>
-          <p className="text-xs text-gray-400">{error.message}</p>
-        </motion.div>
+        <div className="text-red-400 text-sm mt-2">
+          {error.message.toLowerCase().includes('user rejected')
+            ? 'Wallet connection was cancelled.'
+            : 'Could not connect wallet. Please try again.'}
+        </div>
       )}
 
       <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
