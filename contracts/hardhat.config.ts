@@ -19,12 +19,12 @@ const config: HardhatUserConfig = {
 
   networks: {
     qieTestnet: {
-      url: process.env.QIE_TESTNET_RPC_URL || "",
+      url: process.env.QIE_TESTNET_RPC_URL || "https://rpc1testnet.qie.digital",
       accounts:
         process.env.PRIVATE_KEY !== undefined
           ? [process.env.PRIVATE_KEY]
           : [],
-      chainId: 35443,
+      chainId: 1983, // ✅ Correct QIE Testnet Chain ID
     },
     // Uncomment and configure if needed
     // sepolia: {

@@ -3,12 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import Button from '../ui/Button';
 import GradientText from '../ui/GradientText';
-import AuthModal from '../modals/AuthModal';
+import WalletModal from '../modals/WalletModal';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,9 +32,8 @@ const Navbar: React.FC = () => {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'glass-nav shadow-2xl' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-nav shadow-2xl' : 'bg-transparent'
+          }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
@@ -70,10 +69,10 @@ const Navbar: React.FC = () => {
 
             {/* CTA Button */}
             <div className="hidden lg:block">
-              <Button 
-                variant="primary" 
+              <Button
+                variant="primary"
                 size="md"
-                onClick={() => setIsAuthModalOpen(true)}
+                onClick={() => setIsWalletModalOpen(true)}
               >
                 Connect Wallet
               </Button>
@@ -130,13 +129,13 @@ const Navbar: React.FC = () => {
                   {link.name}
                 </motion.a>
               ))}
-              <Button 
-                variant="primary" 
-                size="lg" 
+              <Button
+                variant="primary"
+                size="lg"
                 className="mt-8"
                 onClick={() => {
                   setIsMobileMenuOpen(false);
-                  setIsAuthModalOpen(true);
+                  setIsWalletModalOpen(true);
                 }}
               >
                 Connect Wallet
@@ -146,8 +145,8 @@ const Navbar: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Auth Modal */}
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      {/* Wallet Modal */}
+      <WalletModal isOpen={isWalletModalOpen} onClose={() => setIsWalletModalOpen(false)} />
     </>
   );
 };

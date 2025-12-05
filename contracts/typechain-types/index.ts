@@ -20,9 +20,15 @@ export type { IERC20Metadata } from "./@openzeppelin/contracts/token/ERC20/exten
 export { IERC20Metadata__factory } from "./factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata__factory";
 export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
 export { IERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/IERC20__factory";
+export type { ReentrancyGuard } from "./@openzeppelin/contracts/utils/ReentrancyGuard";
+export { ReentrancyGuard__factory } from "./factories/@openzeppelin/contracts/utils/ReentrancyGuard__factory";
 export type { Counter } from "./contracts/Counter";
 export { Counter__factory } from "./factories/contracts/Counter__factory";
 export type { ProjectCoin } from "./contracts/QIE_Token_Creator.sol/ProjectCoin";
 export { ProjectCoin__factory } from "./factories/contracts/QIE_Token_Creator.sol/ProjectCoin__factory";
+export type { QuickTestToken } from "./contracts/QuickTestToken";
+export { QuickTestToken__factory } from "./factories/contracts/QuickTestToken__factory";
 export type { TestToken } from "./contracts/Test_Token.sol/TestToken";
 export { TestToken__factory } from "./factories/contracts/Test_Token.sol/TestToken__factory";
+export type { TokenFaucet } from "./contracts/TokenFaucet";
+export { TokenFaucet__factory } from "./factories/contracts/TokenFaucet__factory";

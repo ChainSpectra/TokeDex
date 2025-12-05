@@ -4,3 +4,5 @@
 export * as qieTokenCreatorSol from "./QIE_Token_Creator.sol";
 export * as testTokenSol from "./Test_Token.sol";
 export { Counter__factory } from "./Counter__factory";
+export { QuickTestToken__factory } from "./QuickTestToken__factory";
+export { TokenFaucet__factory } from "./TokenFaucet__factory";
