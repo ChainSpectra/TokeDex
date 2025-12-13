@@ -4,29 +4,38 @@ import { Menu, X } from 'lucide-react';
 import Button from '../ui/Button';
 import GradientText from '../ui/GradientText';
 import WalletModal from '../modals/WalletModal';
+import TokenCreationModal from '../modals/TokenCreationModal';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const [isTokenCreationOpen, setIsTokenCreationOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
+    const handleOpenTokenCreation = () => {
+      setIsTokenCreationOpen(true);
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('openTokenCreation', handleOpenTokenCreation);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('openTokenCreation', handleOpenTokenCreation);
+    };
   }, []);
 
   const navLinks = [
     { name: 'Home', href: '#home' },
+    { name: 'My Tokens', href: '#my-tokens' },
     { name: 'Features', href: '#features' },
     { name: 'How It Works', href: '#architecture' },
     { name: 'Tech Stack', href: '#partners' },
-    { name: 'Tokenomics', href: '#tokenomics' },
     { name: 'Get Started', href: '#roadmap' },
-    { name: 'Docs', href: '#docs' },
   ];
 
   return (
@@ -68,7 +77,14 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* CTA Button */}
-            <div className="hidden lg:block">
+            <div className="hidden lg:flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="md"
+                onClick={() => setIsTokenCreationOpen(true)}
+              >
+                Create Token
+              </Button>
               <Button
                 variant="primary"
                 size="md"
@@ -129,17 +145,30 @@ const Navbar: React.FC = () => {
                   {link.name}
                 </motion.a>
               ))}
-              <Button
-                variant="primary"
-                size="lg"
-                className="mt-8"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setIsWalletModalOpen(true);
-                }}
-              >
-                Connect Wallet
-              </Button>
+              <div className="flex flex-col gap-4 w-full px-6">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsTokenCreationOpen(true);
+                  }}
+                >
+                  Create Token
+                </Button>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="w-full"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsWalletModalOpen(true);
+                  }}
+                >
+                  Connect Wallet
+                </Button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -147,6 +176,9 @@ const Navbar: React.FC = () => {
 
       {/* Wallet Modal */}
       <WalletModal isOpen={isWalletModalOpen} onClose={() => setIsWalletModalOpen(false)} />
+
+      {/* Token Creation Modal */}
+      <TokenCreationModal isOpen={isTokenCreationOpen} onClose={() => setIsTokenCreationOpen(false)} />
     </>
   );
 };

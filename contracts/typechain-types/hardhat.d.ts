@@ -62,6 +62,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TestToken__factory>;
     getContractFactory(
+      name: "CustomToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CustomToken__factory>;
+    getContractFactory(
+      name: "TokenFactory",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TokenFactory__factory>;
+    getContractFactory(
       name: "TokenFaucet",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TokenFaucet__factory>;
@@ -127,6 +135,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.TestToken>;
     getContractAt(
+      name: "CustomToken",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CustomToken>;
+    getContractAt(
+      name: "TokenFactory",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TokenFactory>;
+    getContractAt(
       name: "TokenFaucet",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -181,6 +199,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.TestToken>;
     deployContract(
+      name: "CustomToken",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.CustomToken>;
+    deployContract(
+      name: "TokenFactory",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.TokenFactory>;
+    deployContract(
       name: "TokenFaucet",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.TokenFaucet>;
@@ -245,6 +271,16 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.TestToken>;
+    deployContract(
+      name: "CustomToken",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.CustomToken>;
+    deployContract(
+      name: "TokenFactory",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.TokenFactory>;
     deployContract(
       name: "TokenFaucet",
       args: any[],

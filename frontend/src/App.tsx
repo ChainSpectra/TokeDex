@@ -2,6 +2,8 @@ import React, { lazy, Suspense } from 'react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HeroSection from './components/sections/HeroSection';
+import { DebugPanel } from './components/DebugPanel';
+import MyTokensDashboard from './components/MyTokensDashboard';
 
 // Lazy load heavy sections
 const FeaturesSection = lazy(() => import('./components/sections/FeaturesSection'));
@@ -9,6 +11,7 @@ const ArchitectureSection = lazy(() => import('./components/sections/Architectur
 const PartnersSection = lazy(() => import('./components/sections/PartnersSection'));
 const TokenomicsSection = lazy(() => import('./components/sections/TokenomicsSection'));
 const RoadmapSection = lazy(() => import('./components/sections/RoadmapSection'));
+const TokenCreationSection = lazy(() => import('./components/sections/TokenCreationSection'));
 const CTASection = lazy(() => import('./components/sections/CTASection'));
 
 function App() {
@@ -23,7 +26,15 @@ function App() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
           </div>
         }>
+          {/* My Tokens Dashboard */}
+          <section id="my-tokens" className="section-padding bg-dark-800/50">
+            <div className="container-custom">
+              <MyTokensDashboard />
+            </div>
+          </section>
+          
           <FeaturesSection />
+          <TokenCreationSection />
           <ArchitectureSection />
           <PartnersSection />
           <TokenomicsSection />
@@ -33,6 +44,7 @@ function App() {
       </main>
 
       <Footer />
+      <DebugPanel />
     </div>
   );
 }
