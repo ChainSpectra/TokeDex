@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAccount, useBalance, useChainId } from 'wagmi'
 import { ExternalLink, RefreshCw, Droplet, AlertCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -14,9 +14,27 @@ export function QIEFaucet() {
     })
 
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [autoRefreshCount, setAutoRefreshCount] = useState(0)
+
+    // Auto-refresh balance every 5 seconds when balance is 0
+    useEffect(() => {
+        const balanceNum = balance?.value ? parseFloat(formatBalance(balance.value)) : 0
+        
+        if (balanceNum === 0 && autoRefreshCount < 12) {
+            const timer = setTimeout(() => {
+                refetch()
+                setAutoRefreshCount(prev => prev + 1)
+            }, 5000)
+            
+            return () => clearTimeout(timer)
+        } else if (balanceNum > 0) {
+            setAutoRefreshCount(0) // Reset when balance found
+        }
+    }, [balance, autoRefreshCount, refetch])
 
     const handleRefresh = async () => {
         setIsRefreshing(true)
+        setAutoRefreshCount(0) // Reset auto-refresh counter
         await refetch()
         setTimeout(() => setIsRefreshing(false), 500)
     }
@@ -27,6 +45,9 @@ export function QIEFaucet() {
             ? `${QIE_FAUCET_URL}?address=${address}`
             : QIE_FAUCET_URL
         window.open(faucetUrl, '_blank', 'noopener,noreferrer')
+        
+        // Start auto-refresh when user opens faucet
+        setAutoRefreshCount(1)
     }
 
     // Don't show if not on QIE testnet
