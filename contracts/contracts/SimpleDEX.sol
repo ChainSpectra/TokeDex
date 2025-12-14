@@ -26,6 +26,9 @@ contract SimpleDEX is ReentrancyGuard {
     // Pool ID = keccak256(abi.encodePacked(tokenA, tokenB)) where tokenA < tokenB
     mapping(bytes32 => Pool) public pools;
     
+    // Array to track all pool IDs for enumeration
+    bytes32[] private poolIds;
+    
     // Events
     event PoolCreated(bytes32 indexed poolId, address indexed tokenA, address indexed tokenB);
     event LiquidityAdded(bytes32 indexed poolId, address indexed provider, uint256 amountA, uint256 amountB, uint256 liquidity);
@@ -99,6 +102,9 @@ contract SimpleDEX is ReentrancyGuard {
         
         emit PoolCreated(poolId, token0, token1);
         emit LiquidityAdded(poolId, msg.sender, amount0, amount1, liquidity);
+        
+        // Track pool ID for enumeration
+        poolIds.push(poolId);
         
         return poolId;
     }
@@ -267,4 +273,126 @@ contract SimpleDEX is ReentrancyGuard {
     function min(uint256 a, uint256 b) internal pure returns (uint256) {
         return a < b ? a : b;
     }
+    
+    // ============ Pool Enumeration Functions ============
+    // These functions enable pool discovery and analytics (Phase 1-3)
+    
+    /**
+     * @dev Get total number of pools
+     * @return Total count of created pools
+     */
+    function getPoolCount() external view returns (uint256) {
+        return poolIds.length;
+    }
+    
+    /**
+     * @dev Get all pool IDs
+     * @return Array of all pool IDs
+     * Note: For large numbers of pools, consider pagination in frontend
+     */
+    function getAllPoolIds() external view returns (bytes32[] memory) {
+        return poolIds;
+    }
+    
+    /**
+     * @dev Get pool IDs with pagination
+     * @param offset Starting index
+     * @param limit Number of pools to return
+     * @return Array of pool IDs for the requested range
+     * Future-compatible for Phase 2/3 when many pools exist
+     */
+    function getPoolIdsPaginated(uint256 offset, uint256 limit) external view returns (bytes32[] memory) {
+        require(offset < poolIds.length, "Offset out of bounds");
+        
+        uint256 end = offset + limit;
+        if (end > poolIds.length) {
+            end = poolIds.length;
+        }
+        
+        bytes32[] memory result = new bytes32[](end - offset);
+        for (uint256 i = offset; i < end; i++) {
+            result[i - offset] = poolIds[i];
+        }
+        
+        return result;
+    }
+    
+    /**
+     * @dev Get detailed pool information
+     * @param poolId The pool ID to query
+     * @return tokenA First token address
+     * @return tokenB Second token address
+     * @return reserveA Reserve amount of token A
+     * @return reserveB Reserve amount of token B
+     * @return totalLiquidity Total liquidity in the pool
+     * @return exists Whether the pool exists
+     */
+    function getPoolInfo(bytes32 poolId) external view returns (
+        address tokenA,
+        address tokenB,
+        uint256 reserveA,
+        uint256 reserveB,
+        uint256 totalLiquidity,
+        bool exists
+    ) {
+        Pool storage pool = pools[poolId];
+        return (
+            pool.tokenA,
+            pool.tokenB,
+            pool.reserveA,
+            pool.reserveB,
+            pool.totalLiquidity,
+            pool.exists
+        );
+    }
+    
+    /**
+     * @dev Get multiple pool infos in one call
+     * @param poolIdList Array of pool IDs to query
+     * @return tokenAs Array of token A addresses
+     * @return tokenBs Array of token B addresses
+     * @return reserveAs Array of reserve A amounts
+     * @return reserveBs Array of reserve B amounts
+     * @return totalLiquidities Array of total liquidity amounts
+     * Note: Gas-efficient for Phase 2/3 analytics
+     */
+    function getMultiplePoolInfos(bytes32[] calldata poolIdList) external view returns (
+        address[] memory tokenAs,
+        address[] memory tokenBs,
+        uint256[] memory reserveAs,
+        uint256[] memory reserveBs,
+        uint256[] memory totalLiquidities
+    ) {
+        uint256 length = poolIdList.length;
+        tokenAs = new address[](length);
+        tokenBs = new address[](length);
+        reserveAs = new uint256[](length);
+        reserveBs = new uint256[](length);
+        totalLiquidities = new uint256[](length);
+        
+        for (uint256 i = 0; i < length; i++) {
+            Pool storage pool = pools[poolIdList[i]];
+            tokenAs[i] = pool.tokenA;
+            tokenBs[i] = pool.tokenB;
+            reserveAs[i] = pool.reserveA;
+            reserveBs[i] = pool.reserveB;
+            totalLiquidities[i] = pool.totalLiquidity;
+        }
+        
+        return (tokenAs, tokenBs, reserveAs, reserveBs, totalLiquidities);
+    }
+    
+    /**
+     * @dev Check if a pool exists for a token pair
+     * @param tokenA First token address
+     * @param tokenB Second token address
+     * @return exists Whether the pool exists
+     * @return poolId The pool ID if it exists
+     */
+    function poolExists(address tokenA, address tokenB) external view returns (bool exists, bytes32 poolId) {
+        poolId = getPoolId(tokenA, tokenB);
+        exists = pools[poolId].exists;
+        return (exists, poolId);
+    }
 }
+
