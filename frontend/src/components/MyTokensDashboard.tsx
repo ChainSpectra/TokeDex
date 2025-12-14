@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useAccount, usePublicClient, useReadContract } from 'wagmi'
 import { TOKEN_FACTORY_ADDRESS, TOKEN_FACTORY_ABI, QIE_TESTNET_EXPLORER } from '../config/networkConstants'
-import { Coins, ExternalLink, Loader2, Plus, TrendingUp, AlertCircle } from 'lucide-react'
+import { Coins, ExternalLink, Loader2, Plus, TrendingUp, AlertCircle, Copy, Check } from 'lucide-react'
 import { formatUnits } from 'viem'
+import SimpleDEXInterface from './SimpleDEXInterface'
 
 interface TokenData {
     address: string
@@ -49,6 +50,8 @@ export default function MyTokensDashboard() {
     const publicClient = usePublicClient()
     const [tokens, setTokens] = useState<TokenData[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [selectedToken, setSelectedToken] = useState<string | null>(null)
+    const [copiedAddress, setCopiedAddress] = useState<string | null>(null)
 
     // Fetch token addresses created by user
     const { data: tokenAddresses, isLoading: isLoadingAddresses } = useReadContract({
@@ -136,7 +139,27 @@ export default function MyTokensDashboard() {
     }
 
     const handleTradeOnQiedex = (tokenAddress: string) => {
-        window.open(`https://www.dex.qie.digital/swap?token=${tokenAddress}`, '_blank')
+        setSelectedToken(tokenAddress)
+    }
+    
+    const handleCopyAddress = (address: string) => {
+        navigator.clipboard.writeText(address)
+        setCopiedAddress(address)
+        setTimeout(() => setCopiedAddress(null), 2000)
+    }
+    
+    if (selectedToken) {
+        return (
+            <div className="space-y-4">
+                <button
+                    onClick={() => setSelectedToken(null)}
+                    className="sticky top-0 z-50 mb-6 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 rounded-lg inline-flex items-center gap-2 font-semibold shadow-lg transition-all"
+                >
+                    ← Back to My Tokens
+                </button>
+                <SimpleDEXInterface defaultTokenAddress={selectedToken} />
+            </div>
+        )
     }
 
     if (!isConnected) {
@@ -228,9 +251,22 @@ export default function MyTokensDashboard() {
                         {/* Contract Address */}
                         <div className="mb-4">
                             <p className="text-xs text-gray-400 mb-1">Contract Address</p>
-                            <p className="text-xs font-mono bg-gray-900 p-2 rounded break-all">
-                                {token.address.slice(0, 10)}...{token.address.slice(-8)}
-                            </p>
+                            <div className="flex items-center gap-2">
+                                <p className="text-xs font-mono bg-gray-900 p-2 rounded break-all flex-1">
+                                    {token.address.slice(0, 10)}...{token.address.slice(-8)}
+                                </p>
+                                <button
+                                    onClick={() => handleCopyAddress(token.address)}
+                                    className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors flex-shrink-0"
+                                    title="Copy full address"
+                                >
+                                    {copiedAddress === token.address ? (
+                                        <Check className="w-4 h-4 text-green-400" />
+                                    ) : (
+                                        <Copy className="w-4 h-4 text-gray-400" />
+                                    )}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Action Buttons */}

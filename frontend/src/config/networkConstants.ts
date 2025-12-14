@@ -93,3 +93,105 @@ export const TOKEN_FACTORY_ABI = [
     "type": "function"
   }
 ] as const
+
+// SimpleDEX contract address on QIE Testnet
+export const SIMPLE_DEX_ADDRESS = '0xdfEAdE17D4b71cef3a15ECf8aD028e78b08E1fAA'
+
+// SimpleDEX ABI
+export const SIMPLE_DEX_ABI = [
+  {
+    "inputs": [
+      { "internalType": "address", "name": "tokenA", "type": "address" },
+      { "internalType": "address", "name": "tokenB", "type": "address" },
+      { "internalType": "uint256", "name": "amountA", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountB", "type": "uint256" }
+    ],
+    "name": "createPool",
+    "outputs": [{ "internalType": "bytes32", "name": "poolId", "type": "bytes32" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "poolId", "type": "bytes32" },
+      { "internalType": "uint256", "name": "amountADesired", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountBDesired", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountAMin", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountBMin", "type": "uint256" }
+    ],
+    "name": "addLiquidity",
+    "outputs": [
+      { "internalType": "uint256", "name": "amountA", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountB", "type": "uint256" },
+      { "internalType": "uint256", "name": "liquidity", "type": "uint256" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "poolId", "type": "bytes32" },
+      { "internalType": "address", "name": "tokenIn", "type": "address" },
+      { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" }
+    ],
+    "name": "swap",
+    "outputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "tokenA", "type": "address" },
+      { "internalType": "address", "name": "tokenB", "type": "address" }
+    ],
+    "name": "getPoolId",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "poolId", "type": "bytes32" }],
+    "name": "getReserves",
+    "outputs": [
+      { "internalType": "uint256", "name": "reserveA", "type": "uint256" },
+      { "internalType": "uint256", "name": "reserveB", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "internalType": "uint256", "name": "reserveIn", "type": "uint256" },
+      { "internalType": "uint256", "name": "reserveOut", "type": "uint256" }
+    ],
+    "name": "getAmountOut",
+    "outputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "bytes32", "name": "poolId", "type": "bytes32" },
+      { "indexed": true, "internalType": "address", "name": "tokenA", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "tokenB", "type": "address" }
+    ],
+    "name": "PoolCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "bytes32", "name": "poolId", "type": "bytes32" },
+      { "indexed": true, "internalType": "address", "name": "user", "type": "address" },
+      { "indexed": false, "internalType": "address", "name": "tokenIn", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "indexed": false, "internalType": "address", "name": "tokenOut", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amountOut", "type": "uint256" }
+    ],
+    "name": "Swap",
+    "type": "event"
+  }
+] as const
