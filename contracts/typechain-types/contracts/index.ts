@@ -7,6 +7,7 @@ import type * as testTokenSol from "./Test_Token.sol";
 export type { testTokenSol };
 import type * as tokenFactorySol from "./TokenFactory.sol";
 export type { tokenFactorySol };
+export type { AssetNFT } from "./AssetNFT";
 export type { Counter } from "./Counter";
 export type { QuickTestToken } from "./QuickTestToken";
 export type { SimpleDEX } from "./SimpleDEX";

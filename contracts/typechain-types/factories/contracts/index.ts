@@ -4,6 +4,7 @@
 export * as qieTokenCreatorSol from "./QIE_Token_Creator.sol";
 export * as testTokenSol from "./Test_Token.sol";
 export * as tokenFactorySol from "./TokenFactory.sol";
+export { AssetNFT__factory } from "./AssetNFT__factory";
 export { Counter__factory } from "./Counter__factory";
 export { QuickTestToken__factory } from "./QuickTestToken__factory";
 export { SimpleDEX__factory } from "./SimpleDEX__factory";

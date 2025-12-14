@@ -2,8 +2,8 @@ import { lazy, Suspense } from 'react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HeroSection from './components/sections/HeroSection';
-import { DebugPanel } from './components/DebugPanel';
 import MyTokensDashboard from './components/MyTokensDashboard';
+import AssetNFTCreator from './components/AssetNFTCreator';
 
 // Lazy load heavy sections
 const FeaturesSection = lazy(() => import('./components/sections/FeaturesSection'));
@@ -33,6 +33,13 @@ function App() {
             </div>
           </section>
 
+          {/* Asset NFT Creator - Phase 3.3 */}
+          <section id="mint-nft" className="section-padding bg-gradient-to-b from-dark-900 to-dark-800">
+            <div className="container-custom">
+              <AssetNFTCreator />
+            </div>
+          </section>
+
           <FeaturesSection />
           <TokenCreationSection />
           <ArchitectureSection />
@@ -44,7 +51,6 @@ function App() {
       </main>
 
       <Footer />
-      <DebugPanel />
     </div>
   );
 }

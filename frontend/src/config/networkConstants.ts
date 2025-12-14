@@ -94,8 +94,11 @@ export const TOKEN_FACTORY_ABI = [
   }
 ] as const
 
-// SimpleDEX contract address on QIE Testnet
-export const SIMPLE_DEX_ADDRESS = '0xe6E42ee1E5e8BB0dc947fC40079ae22370200048'
+// SimpleDEX Contract (Deployed)
+export const SIMPLE_DEX_ADDRESS = '0xe6E42ee1E5e8BB0dc947fC40079ae22370200048' as const
+
+// AssetNFT Contract (Deployed - Phase 3.2)
+export const ASSET_NFT_ADDRESS = '0x644C20e6EA41840612960cdeF6138aa3D397C073' as const
 
 // SimpleDEX ABI
 export const SIMPLE_DEX_ABI = [

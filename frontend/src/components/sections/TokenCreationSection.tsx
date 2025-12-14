@@ -1,6 +1,6 @@
 
 import { motion } from 'framer-motion'
-import { QiedexTokenCreationFlow } from '../QiedexTokenCreationFlow'
+import DirectTokenCreator from '../DirectTokenCreator'
 
 export default function TokenCreationSection() {
     return (
@@ -24,8 +24,8 @@ export default function TokenCreationSection() {
                         Create Your Custom Token
                     </h2>
                     <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                        Leverage Qiedex's free token creator to launch your business token on QIE Testnet with
-                        zero code. We handle the UX, Qiedex handles the infrastructure.
+                        Launch your business token on QIE Testnet with zero code.
+                        Deploy ERC20 tokens instantly using our TokenFactory.
                     </p>
                 </motion.div>
 
@@ -36,12 +36,7 @@ export default function TokenCreationSection() {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     viewport={{ once: true }}
                 >
-                    <QiedexTokenCreationFlow
-                        onTokenCreated={(tokenData) => {
-                            console.log('Token created:', tokenData)
-                            // You can trigger additional actions here
-                        }}
-                    />
+                    <DirectTokenCreator />
                 </motion.div>
 
                 {/* Info cards */}
@@ -59,13 +54,13 @@ export default function TokenCreationSection() {
                             icon: '✨',
                         },
                         {
-                            title: 'QIE20 Compliant',
-                            description: 'All tokens are fully QIE20-compliant and audited',
+                            title: 'ERC20 Compliant',
+                            description: 'All tokens are fully ERC20-compliant using OpenZeppelin',
                             icon: '✅',
                         },
                         {
                             title: 'Instant Trading',
-                            description: 'Created tokens can be traded immediately on Qiedex',
+                            description: 'Created tokens can be traded immediately on SimpleDEX',
                             icon: '⚡',
                         },
                     ].map((card, index) => (
