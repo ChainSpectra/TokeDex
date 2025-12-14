@@ -14,7 +14,7 @@ function AssetNFTCard({ tokenId }: AssetNFTCardProps) {
     const { address } = useAccount()
 
     // Fetch asset metadata
-    const { data: metadata, isLoading } = useReadContract({
+    const { data: metadata, isLoading, isError } = useReadContract({
         address: ASSET_NFT_ADDRESS,
         abi: ASSET_NFT_ABI,
         functionName: 'getAssetMetadata',
@@ -37,106 +37,110 @@ function AssetNFTCard({ tokenId }: AssetNFTCardProps) {
         )
     }
 
-    if (!metadata) return null
+    if (isError || !metadata) return null
 
-    const [name, description, assetType, imageHashes, , , appraisalValue, , isVerified] = metadata as any[]
-    const firstImageHash = imageHashes[0]
-    const isOwner = owner?.toLowerCase() === address?.toLowerCase()
+    try {
+        const [name, description, assetType, imageHashes, , , appraisalValue, , isVerified] = metadata as any[]
+        const firstImageHash = imageHashes?.[0] || ''
+        const isOwner = owner?.toLowerCase() === address?.toLowerCase()
 
-    return (
-        <div className="bg-gray-800/50 border border-gray-700 rounded-xl overflow-hidden hover:border-purple-500/50 transition-all hover:shadow-xl hover:shadow-purple-500/10">
-            {/* Image */}
-            <div className="relative h-64 bg-gray-900">
-                {firstImageHash ? (
-                    <img
-                        src={getIPFSUrl(firstImageHash)}
-                        alt={name}
-                        className="w-full h-full object-cover"
-                    />
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                        <ImageIcon className="w-16 h-16 text-gray-600" />
+        return (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-xl overflow-hidden hover:border-purple-500/50 transition-all hover:shadow-xl hover:shadow-purple-500/10">
+                {/* Image */}
+                <div className="relative h-64 bg-gray-900">
+                    {firstImageHash ? (
+                        <img
+                            src={getIPFSUrl(firstImageHash)}
+                            alt={name || 'Asset'}
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                            <ImageIcon className="w-16 h-16 text-gray-600" />
+                        </div>
+                    )}
+
+                    {/* Badges */}
+                    <div className="absolute top-3 right-3 flex gap-2">
+                        {isVerified && (
+                            <div className="bg-green-500/90 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3" />
+                                Verified
+                            </div>
+                        )}
+                        {isOwner && (
+                            <div className="bg-purple-500/90 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                You Own This
+                            </div>
+                        )}
                     </div>
-                )}
 
-                {/* Badges */}
-                <div className="absolute top-3 right-3 flex gap-2">
-                    {isVerified && (
-                        <div className="bg-green-500/90 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3" />
-                            Verified
+                    {/* Asset Type Badge */}
+                    <div className="absolute bottom-3 left-3">
+                        <div className="bg-black/70 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                            {assetType || 'Asset'}
                         </div>
-                    )}
-                    {isOwner && (
-                        <div className="bg-purple-500/90 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                            You Own This
-                        </div>
-                    )}
+                    </div>
                 </div>
 
-                {/* Asset Type Badge */}
-                <div className="absolute bottom-3 left-3">
-                    <div className="bg-black/70 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                        {assetType}
+                {/* Content */}
+                <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                        <div>
+                            <h3 className="text-xl font-bold mb-1">{name || 'Unnamed Asset'}</h3>
+                            <p className="text-sm text-gray-400">Token ID: #{tokenId}</p>
+                        </div>
+                    </div>
+
+                    <p className="text-sm text-gray-300 mb-4 line-clamp-2">
+                        {description || 'No description'}
+                    </p>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-gray-900/50 rounded-lg p-3">
+                            <p className="text-xs text-gray-400 mb-1">Appraisal Value</p>
+                            <p className="text-lg font-bold">
+                                ${appraisalValue ? Number(formatUnits(appraisalValue, 18)).toLocaleString() : '0'}
+                            </p>
+                        </div>
+                        <div className="bg-gray-900/50 rounded-lg p-3">
+                            <p className="text-xs text-gray-400 mb-1">Images</p>
+                            <p className="text-lg font-bold">{imageHashes?.length || 0}</p>
+                        </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-2">
+                        <a
+                            href={`https://testnet.qie.digital/token/${ASSET_NFT_ADDRESS}?a=${tokenId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2"
+                        >
+                            <ExternalLink className="w-4 h-4" />
+                            View on Explorer
+                        </a>
+                        {isOwner && (
+                            <button className="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition-all">
+                                Manage
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
-
-            {/* Content */}
-            <div className="p-6">
-                <div className="flex items-start justify-between mb-3">
-                    <div>
-                        <h3 className="text-xl font-bold mb-1">{name}</h3>
-                        <p className="text-sm text-gray-400">Token ID: #{tokenId}</p>
-                    </div>
-                </div>
-
-                <p className="text-sm text-gray-300 mb-4 line-clamp-2">
-                    {description}
-                </p>
-
-                {/* Stats */}
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-gray-900/50 rounded-lg p-3">
-                        <p className="text-xs text-gray-400 mb-1">Appraisal Value</p>
-                        <p className="text-lg font-bold">
-                            ${Number(formatUnits(appraisalValue, 18)).toLocaleString()}
-                        </p>
-                    </div>
-                    <div className="bg-gray-900/50 rounded-lg p-3">
-                        <p className="text-xs text-gray-400 mb-1">Images</p>
-                        <p className="text-lg font-bold">{imageHashes.length}</p>
-                    </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-2">
-                    <a
-                        href={`https://testnet.qie.digital/token/${ASSET_NFT_ADDRESS}?a=${tokenId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2"
-                    >
-                        <ExternalLink className="w-4 h-4" />
-                        View on Explorer
-                    </a>
-                    {isOwner && (
-                        <button className="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition-all">
-                            Manage
-                        </button>
-                    )}
-                </div>
-            </div>
-        </div>
-    )
+        )
+    } catch (error) {
+        console.error('Error rendering NFT card:', error)
+        return null
+    }
 }
 
 export default function MyAssets() {
     const { address, isConnected } = useAccount()
-    const [filter, setFilter] = useState<'all' | 'owned'>('all')
 
-    // Fetch total supply
-    const { data: totalSupply, isLoading: isLoadingSupply } = useReadContract({
+    // Fetch total supply with error handling
+    const { data: totalSupply, isLoading: isLoadingSupply, isError } = useReadContract({
         address: ASSET_NFT_ADDRESS,
         abi: ASSET_NFT_ABI,
         functionName: 'totalSupply'
@@ -156,8 +160,6 @@ export default function MyAssets() {
         )
     }
 
-    const supply = totalSupply ? Number(totalSupply) : 0
-
     if (isLoadingSupply) {
         return (
             <div className="max-w-6xl mx-auto p-6">
@@ -167,6 +169,9 @@ export default function MyAssets() {
             </div>
         )
     }
+
+    // Handle error or zero supply
+    const supply = (totalSupply && !isError) ? Number(totalSupply) : 0
 
     if (supply === 0) {
         return (
@@ -218,28 +223,6 @@ export default function MyAssets() {
                     <p className="text-sm text-gray-400 mb-1">Total Value</p>
                     <p className="text-3xl font-bold">-</p>
                 </div>
-            </div>
-
-            {/* Filter */}
-            <div className="flex gap-3 mb-6">
-                <button
-                    onClick={() => setFilter('all')}
-                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${filter === 'all'
-                            ? 'bg-purple-600 text-white'
-                            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                        }`}
-                >
-                    All Assets ({supply})
-                </button>
-                <button
-                    onClick={() => setFilter('owned')}
-                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${filter === 'owned'
-                            ? 'bg-purple-600 text-white'
-                            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                        }`}
-                >
-                    My Assets
-                </button>
             </div>
 
             {/* NFT Grid */}
