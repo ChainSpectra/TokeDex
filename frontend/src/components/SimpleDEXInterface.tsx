@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi'
 import { parseUnits, formatUnits } from 'viem'
 import { SIMPLE_DEX_ADDRESS, SIMPLE_DEX_ABI, QIE_TESTNET_EXPLORER } from '../config/networkConstants'
-import { ArrowDownUp, Plus, Loader2, CheckCircle, AlertCircle, ExternalLink, Droplet } from 'lucide-react'
+import { ArrowDownUp, Plus, Loader2, CheckCircle, AlertCircle, ExternalLink, Droplet, Database } from 'lucide-react'
 import TokenApprovalHelper from './TokenApprovalHelper'
+import PoolsExplorer from './PoolsExplorer'
 
 interface SimpleDEXProps {
   defaultTokenAddress?: string
 }
 
-type Tab = 'swap' | 'liquidity'
+type Tab = 'swap' | 'liquidity' | 'pools'
 
 export default function SimpleDEXInterface({ defaultTokenAddress }: SimpleDEXProps) {
   const { isConnected } = useAccount()
@@ -150,49 +151,69 @@ export default function SimpleDEXInterface({ defaultTokenAddress }: SimpleDEXPro
           <Droplet className="w-5 h-5 inline mr-2" />
           Liquidity
         </button>
+        <button
+          onClick={() => setActiveTab('pools')}
+          className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all ${activeTab === 'pools'
+            ? 'bg-gradient-to-r from-purple-600 to-pink-600'
+            : 'hover:bg-gray-700/50'
+            }`}
+        >
+          <Database className="w-5 h-5 inline mr-2" />
+          Pools
+        </button>
       </div>
 
-      <div className="bg-gray-800/50 rounded-lg p-6">
-        {activeTab === 'swap' ? (
-          <SwapInterface
-            tokenA={tokenA}
-            tokenB={tokenB}
-            amountA={amountA}
-            amountB={amountB}
-            slippage={slippage}
-            poolId={poolId}
-            reserves={reserves}
-            setTokenA={setTokenA}
-            setTokenB={setTokenB}
-            setAmountA={setAmountA}
-            setAmountB={setAmountB}
-            setSlippage={setSlippage}
-            onSwap={handleSwap}
-            isPending={isPending}
-            isConfirming={isConfirming}
-            error={error}
-            hash={hash}
-          />
-        ) : (
-          <LiquidityInterface
-            tokenA={tokenA}
-            tokenB={tokenB}
-            amountA={amountA}
-            amountB={amountB}
-            poolId={poolId}
-            reserves={reserves}
-            setTokenA={setTokenA}
-            setTokenB={setTokenB}
-            setAmountA={setAmountA}
-            setAmountB={setAmountB}
-            onCreatePool={handleCreatePool}
-            isPending={isPending}
-            isConfirming={isConfirming}
-            error={error}
-            hash={hash}
-          />
-        )}
-      </div>
+      {activeTab === 'pools' ? (
+        <PoolsExplorer
+          onSelectPool={(tokenA, tokenB, tab) => {
+            setTokenA(tokenA)
+            setTokenB(tokenB)
+            setActiveTab(tab)
+          }}
+        />
+      ) : (
+        <div className="bg-gray-800/50 rounded-lg p-6">
+          {activeTab === 'swap' ? (
+            <SwapInterface
+              tokenA={tokenA}
+              tokenB={tokenB}
+              amountA={amountA}
+              amountB={amountB}
+              slippage={slippage}
+              poolId={poolId}
+              reserves={reserves}
+              setTokenA={setTokenA}
+              setTokenB={setTokenB}
+              setAmountA={setAmountA}
+              setAmountB={setAmountB}
+              setSlippage={setSlippage}
+              onSwap={handleSwap}
+              isPending={isPending}
+              isConfirming={isConfirming}
+              error={error}
+              hash={hash}
+            />
+          ) : (
+            <LiquidityInterface
+              tokenA={tokenA}
+              tokenB={tokenB}
+              amountA={amountA}
+              amountB={amountB}
+              poolId={poolId}
+              reserves={reserves}
+              setTokenA={setTokenA}
+              setTokenB={setTokenB}
+              setAmountA={setAmountA}
+              setAmountB={setAmountB}
+              onCreatePool={handleCreatePool}
+              isPending={isPending}
+              isConfirming={isConfirming}
+              error={error}
+              hash={hash}
+            />
+          )}
+        </div>
+      )}
 
       {isSuccess && (
         <div className="mt-4 bg-green-500/10 border border-green-500/50 rounded-lg p-4">

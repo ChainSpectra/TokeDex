@@ -95,7 +95,7 @@ export const TOKEN_FACTORY_ABI = [
 ] as const
 
 // SimpleDEX contract address on QIE Testnet
-export const SIMPLE_DEX_ADDRESS = '0xdfEAdE17D4b71cef3a15ECf8aD028e78b08E1fAA'
+export const SIMPLE_DEX_ADDRESS = '0xe6E42ee1E5e8BB0dc947fC40079ae22370200048'
 
 // SimpleDEX ABI
 export const SIMPLE_DEX_ABI = [
@@ -193,5 +193,69 @@ export const SIMPLE_DEX_ABI = [
     ],
     "name": "Swap",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "getPoolCount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllPoolIds",
+    "outputs": [{ "internalType": "bytes32[]", "name": "", "type": "bytes32[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "poolId", "type": "bytes32" }],
+    "name": "getPoolInfo",
+    "outputs": [
+      { "internalType": "address", "name": "tokenA", "type": "address" },
+      { "internalType": "address", "name": "tokenB", "type": "address" },
+      { "internalType": "uint256", "name": "reserveA", "type": "uint256" },
+      { "internalType": "uint256", "name": "reserveB", "type": "uint256" },
+      { "internalType": "uint256", "name": "totalLiquidity", "type": "uint256" },
+      { "internalType": "bool", "name": "exists", "type": "bool" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "offset", "type": "uint256" },
+      { "internalType": "uint256", "name": "limit", "type": "uint256" }
+    ],
+    "name": "getPoolIdsPaginated",
+    "outputs": [{ "internalType": "bytes32[]", "name": "", "type": "bytes32[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32[]", "name": "poolIdList", "type": "bytes32[]" }],
+    "name": "getMultiplePoolInfos",
+    "outputs": [
+      { "internalType": "address[]", "name": "tokenAs", "type": "address[]" },
+      { "internalType": "address[]", "name": "tokenBs", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "reserveAs", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "reserveBs", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "totalLiquidities", "type": "uint256[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "tokenA", "type": "address" },
+      { "internalType": "address", "name": "tokenB", "type": "address" }
+    ],
+    "name": "poolExists",
+    "outputs": [
+      { "internalType": "bool", "name": "exists", "type": "bool" },
+      { "internalType": "bytes32", "name": "poolId", "type": "bytes32" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ] as const

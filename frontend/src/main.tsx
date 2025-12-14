@@ -9,8 +9,8 @@ import { config } from './config/wagmi'
 // Fix BigInt serialization for React DevTools
 // This prevents "Do not know how to serialize a BigInt" errors
 // wagmi v3 returns BigInt values which React DevTools can't serialize
-if (typeof BigInt.prototype.toJSON === 'undefined') {
-  BigInt.prototype.toJSON = function () {
+if (typeof (BigInt.prototype as any).toJSON === 'undefined') {
+  (BigInt.prototype as any).toJSON = function () {
     return this.toString()
   }
 }
