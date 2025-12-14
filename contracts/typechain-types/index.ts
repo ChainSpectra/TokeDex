@@ -28,6 +28,8 @@ export type { ProjectCoin } from "./contracts/QIE_Token_Creator.sol/ProjectCoin"
 export { ProjectCoin__factory } from "./factories/contracts/QIE_Token_Creator.sol/ProjectCoin__factory";
 export type { QuickTestToken } from "./contracts/QuickTestToken";
 export { QuickTestToken__factory } from "./factories/contracts/QuickTestToken__factory";
+export type { SimpleDEX } from "./contracts/SimpleDEX";
+export { SimpleDEX__factory } from "./factories/contracts/SimpleDEX__factory";
 export type { TestToken } from "./contracts/Test_Token.sol/TestToken";
 export { TestToken__factory } from "./factories/contracts/Test_Token.sol/TestToken__factory";
 export type { CustomToken } from "./contracts/TokenFactory.sol/CustomToken";

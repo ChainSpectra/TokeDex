@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, usePublicClient } from 'wagmi'
 import { parseUnits } from 'viem'
 import { TOKEN_FACTORY_ADDRESS, TOKEN_FACTORY_ABI, QIE_TESTNET_EXPLORER } from '../config/networkConstants'
-import { CheckCircle, Loader2, AlertCircle, ExternalLink } from 'lucide-react'
+import { CheckCircle, Loader2, AlertCircle, ExternalLink, Copy, Check } from 'lucide-react'
 
 interface TokenParams {
     name: string
@@ -24,6 +24,7 @@ export default function DirectTokenCreator() {
     
     const [createdTokenAddress, setCreatedTokenAddress] = useState<string>('')
     const [error, setError] = useState<string>('')
+    const [copied, setCopied] = useState(false)
     
     const { data: hash, isPending, writeContract, reset } = useWriteContract()
     
@@ -96,12 +97,21 @@ export default function DirectTokenCreator() {
         reset()
         setCreatedTokenAddress('')
         setError('')
+        setCopied(false)
         setTokenParams({
             name: '',
             symbol: '',
             initialSupply: '1000000',
             decimals: 18
         })
+    }
+    
+    const handleCopyAddress = () => {
+        if (createdTokenAddress) {
+            navigator.clipboard.writeText(createdTokenAddress)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
+        }
     }
     
     if (!isConnected) {
@@ -161,9 +171,22 @@ export default function DirectTokenCreator() {
                         </div>
                         <div>
                             <label className="text-sm text-gray-400">Token Contract Address</label>
-                            <p className="text-sm font-mono bg-gray-900 p-2 rounded break-all">
-                                {createdTokenAddress}
-                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                                <p className="text-sm font-mono bg-gray-900 p-2 rounded break-all flex-1">
+                                    {createdTokenAddress}
+                                </p>
+                                <button
+                                    onClick={handleCopyAddress}
+                                    className="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors flex-shrink-0"
+                                    title="Copy address"
+                                >
+                                    {copied ? (
+                                        <Check className="w-5 h-5 text-green-400" />
+                                    ) : (
+                                        <Copy className="w-5 h-5" />
+                                    )}
+                                </button>
+                            </div>
                             <a
                                 href={`${QIE_TESTNET_EXPLORER}/address/${createdTokenAddress}`}
                                 target="_blank"
