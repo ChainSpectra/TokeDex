@@ -9,4 +9,5 @@ import type * as tokenFactorySol from "./TokenFactory.sol";
 export type { tokenFactorySol };
 export type { Counter } from "./Counter";
 export type { QuickTestToken } from "./QuickTestToken";
+export type { SimpleDEX } from "./SimpleDEX";
 export type { TokenFaucet } from "./TokenFaucet";

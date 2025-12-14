@@ -58,6 +58,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.QuickTestToken__factory>;
     getContractFactory(
+      name: "SimpleDEX",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SimpleDEX__factory>;
+    getContractFactory(
       name: "TestToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TestToken__factory>;
@@ -130,6 +134,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.QuickTestToken>;
     getContractAt(
+      name: "SimpleDEX",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SimpleDEX>;
+    getContractAt(
       name: "TestToken",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -195,6 +204,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.QuickTestToken>;
     deployContract(
+      name: "SimpleDEX",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SimpleDEX>;
+    deployContract(
       name: "TestToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.TestToken>;
@@ -266,6 +279,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.QuickTestToken>;
+    deployContract(
+      name: "SimpleDEX",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SimpleDEX>;
     deployContract(
       name: "TestToken",
       args: any[],
