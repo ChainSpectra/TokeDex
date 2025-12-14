@@ -3,6 +3,7 @@
 A full-stack Web3 application for creating, managing, and trading ERC20 tokens on the QIE Testnet. TokeDex provides an intuitive interface for businesses and individuals to launch their own tokens and participate in decentralized finance.
 
 ---
+Demo VideoLink as requested by QIE Blockchain Hackathon : https://youtu.be/3n-PIS4Vhdk
 
 ## 🌟 Features
 
@@ -255,3 +256,4 @@ This project is part of the ChainSpectra ecosystem.
 ---
 
 **Ready to tokenize your business? Start creating tokens on TokeDex!** 🚀
+
