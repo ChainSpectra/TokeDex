@@ -6,6 +6,15 @@ import './index.css'
 import { AppWithSplash } from './components/CrystalGenesisSplash'
 import { config } from './config/wagmi'
 
+// Fix BigInt serialization for React DevTools
+// This prevents "Do not know how to serialize a BigInt" errors
+// wagmi v3 returns BigInt values which React DevTools can't serialize
+if (typeof BigInt.prototype.toJSON === 'undefined') {
+  BigInt.prototype.toJSON = function () {
+    return this.toString()
+  }
+}
+
 const queryClient = new QueryClient()
 const root = document.getElementById('root');
 
