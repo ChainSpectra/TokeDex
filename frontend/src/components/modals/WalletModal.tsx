@@ -4,23 +4,17 @@ import { useAccount } from 'wagmi';
 import { WalletConnector } from '../WalletConnector';
 import { NetworkSwitcher } from '../NetworkSwitcher';
 import { QIEFaucet } from '../QIEFaucet';
-import { QTTFaucet } from '../QTTFaucet';
 
 interface WalletModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-// Helper component to conditionally show faucets
-const FaucetsWrapper = () => {
+// Helper component to conditionally show faucet
+const FaucetWrapper = () => {
     const { isConnected } = useAccount();
     if (!isConnected) return null;
-    return (
-        <>
-            <QIEFaucet />
-            <QTTFaucet />
-        </>
-    );
+    return <QIEFaucet />;
 };
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
@@ -97,8 +91,8 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
                                     {/* Wallet Connector */}
                                     <WalletConnector />
 
-                                    {/* Faucets - Shows after connection */}
-                                    <FaucetsWrapper />
+                                    {/* Faucet - Shows after connection */}
+                                    <FaucetWrapper />
                                 </div>
 
                                 {/* Info Footer */}

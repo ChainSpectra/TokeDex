@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useAccount, useChainId } from 'wagmi'
+import { useAccount, useChainId, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { Droplet, RefreshCw, Clock, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { ethers } from 'ethers'
 import { QIE_TESTNET_CHAIN_ID } from '../config/networkConstants'
 import { formatBalance, showNotification } from '../utils/walletUtils'
 import { TokenImporter } from './TokenImporter'
@@ -11,97 +10,150 @@ import { QTT_TOKEN_ADDRESS, QTT_FAUCET_ADDRESS } from '../config/networkConstant
 
 // Faucet ABI - only the functions we need
 const FAUCET_ABI = [
-    "function claimTokens() external",
-    "function canClaim(address) external view returns (bool)",
-    "function timeUntilNextClaim(address) external view returns (uint256)",
-    "function getFaucetBalance() external view returns (uint256)",
-    "function CLAIM_AMOUNT() external view returns (uint256)"
-]
+    {
+        "inputs": [],
+        "name": "claimTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+        "name": "canClaim",
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+        "name": "timeUntilNextClaim",
+        "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getFaucetBalance",
+        "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "CLAIM_AMOUNT",
+        "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+        "stateMutability": "view",
+        "type": "function"
+    }
+] as const
 
 // ERC20 ABI - only balanceOf
 const ERC20_ABI = [
-    "function balanceOf(address) external view returns (uint256)"
-]
+    {
+        "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
+        "name": "balanceOf",
+        "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+        "stateMutability": "view",
+        "type": "function"
+    }
+] as const
 
 export function QTTFaucet() {
     const { address } = useAccount()
     const chainId = useChainId()
 
-    const [balance, setBalance] = useState<bigint>(BigInt(0))
-    const [faucetBalance, setFaucetBalance] = useState<bigint>(BigInt(0))
-    const [canClaim, setCanClaim] = useState(false)
-    const [timeUntilClaim, setTimeUntilClaim] = useState(0)
-    const [isClaiming, setIsClaiming] = useState(false)
+    // Check if contracts are deployed
+    const contractsDeployed = QTT_TOKEN_ADDRESS !== "0x0000000000000000000000000000000000000000"
+
+    // Read user's QTT balance
+    const { data: balance = BigInt(0), refetch: refetchBalance } = useReadContract({
+        address: QTT_TOKEN_ADDRESS as `0x${string}`,
+        abi: ERC20_ABI,
+        functionName: 'balanceOf',
+        args: address ? [address] : undefined
+    })
+
+    // Read faucet balance
+    const { data: faucetBalance = BigInt(0), refetch: refetchFaucetBalance } = useReadContract({
+        address: QTT_FAUCET_ADDRESS as `0x${string}`,
+        abi: FAUCET_ABI,
+        functionName: 'getFaucetBalance'
+    })
+
+    // Check if user can claim
+    const { data: canClaim = false, refetch: refetchCanClaim } = useReadContract({
+        address: QTT_FAUCET_ADDRESS as `0x${string}`,
+        abi: FAUCET_ABI,
+        functionName: 'canClaim',
+        args: address ? [address] : undefined
+    })
+
+    // Get time until next claim
+    const { data: timeUntilClaim = BigInt(0), refetch: refetchTimeUntilClaim } = useReadContract({
+        address: QTT_FAUCET_ADDRESS as `0x${string}`,
+        abi: FAUCET_ABI,
+        functionName: 'timeUntilNextClaim',
+        args: address ? [address] : undefined
+    })
+
+    // Write contract for claiming
+    const { data: hash, isPending, writeContract } = useWriteContract()
+
+    // Wait for transaction confirmation
+    const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+        hash,
+    })
+
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    // Check if contracts are deployed
-    const contractsDeployed = QTT_TOKEN_ADDRESS !== "0x0000000000000000000000000000000000000000";
-
-    // Fetch user balance and faucet status
-    const fetchData = async () => {
+    // Auto-refresh data every 10 seconds
+    useEffect(() => {
         if (!address || !contractsDeployed || chainId !== QIE_TESTNET_CHAIN_ID) return
 
-        if (!window.ethereum) {
-            console.warn('Web3 wallet not available')
-            return
-        }
+        const interval = setInterval(() => {
+            refetchBalance()
+            refetchFaucetBalance()
+            refetchCanClaim()
+            refetchTimeUntilClaim()
+        }, 10000)
 
-        try {
-            const provider = new ethers.BrowserProvider(window.ethereum)
-
-            // Get QTT balance
-            const tokenContract = new ethers.Contract(QTT_TOKEN_ADDRESS, ERC20_ABI, provider)
-            const userBalance = await tokenContract.balanceOf(address)
-            setBalance(userBalance)
-
-            // Get faucet info
-            const faucetContract = new ethers.Contract(QTT_FAUCET_ADDRESS, FAUCET_ABI, provider)
-            const fBalance = await faucetContract.getFaucetBalance()
-            const canUserClaim = await faucetContract.canClaim(address)
-            const timeRemaining = await faucetContract.timeUntilNextClaim(address)
-
-            setFaucetBalance(fBalance)
-            setCanClaim(canUserClaim)
-            setTimeUntilClaim(Number(timeRemaining))
-        } catch (error) {
-            console.error('Error fetching faucet data:', error)
-        }
-    }
-
-    useEffect(() => {
-        fetchData()
-        const interval = setInterval(fetchData, 10000) // Refresh every 10 seconds
         return () => clearInterval(interval)
     }, [address, chainId, contractsDeployed])
 
+    // Handle successful claim
+    useEffect(() => {
+        if (isSuccess) {
+            showNotification('Successfully claimed 100 QTT! 🎉', 'success')
+            // Refresh all data
+            refetchBalance()
+            refetchFaucetBalance()
+            refetchCanClaim()
+            refetchTimeUntilClaim()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSuccess])
+
     const handleRefresh = async () => {
         setIsRefreshing(true)
-        await fetchData()
+        await Promise.all([
+            refetchBalance(),
+            refetchFaucetBalance(),
+            refetchCanClaim(),
+            refetchTimeUntilClaim()
+        ])
         setTimeout(() => setIsRefreshing(false), 500)
     }
 
     const handleClaim = async () => {
         if (!address || !canClaim) return
 
-        if (!window.ethereum) {
-            showNotification('Please install MetaMask or another Web3 wallet', 'error')
-            return
-        }
-
-        setIsClaiming(true)
         try {
-            const provider = new ethers.BrowserProvider(window.ethereum)
-            const signer = await provider.getSigner()
-            const faucetContract = new ethers.Contract(QTT_FAUCET_ADDRESS, FAUCET_ABI, signer)
-
-            const tx = await faucetContract.claimTokens()
+            writeContract({
+                address: QTT_FAUCET_ADDRESS as `0x${string}`,
+                abi: FAUCET_ABI,
+                functionName: 'claimTokens',
+            })
             showNotification('Transaction submitted! Waiting for confirmation...', 'info')
-
-            await tx.wait()
-            showNotification('Successfully claimed 100 QTT! 🎉', 'success')
-
-            // Refresh data
-            await fetchData()
         } catch (error: any) {
             console.error('Claim error:', error)
             if (error.message?.includes('user rejected')) {
@@ -109,8 +161,6 @@ export function QTTFaucet() {
             } else {
                 showNotification('Failed to claim tokens. Please try again.', 'error')
             }
-        } finally {
-            setIsClaiming(false)
         }
     }
 
@@ -140,15 +190,17 @@ export function QTTFaucet() {
         )
     }
 
+
     const formattedBalance = formatBalance(balance)
     const formattedFaucetBalance = formatBalance(faucetBalance)
-    const claimsRemaining = Number(faucetBalance) / Number(ethers.parseEther("100"))
+    const claimsRemaining = Number(faucetBalance) / Number(BigInt(100) * BigInt(10 ** 18))
 
     // Format time remaining
-    const formatTimeRemaining = (seconds: number) => {
-        if (seconds === 0) return "Ready to claim!"
-        const hours = Math.floor(seconds / 3600)
-        const minutes = Math.floor((seconds % 3600) / 60)
+    const formatTimeRemaining = (seconds: bigint | number) => {
+        const secs = typeof seconds === 'bigint' ? Number(seconds) : seconds
+        if (secs === 0) return "Ready to claim!"
+        const hours = Math.floor(secs / 3600)
+        const minutes = Math.floor((secs % 3600) / 60)
         return `${hours}h ${minutes}m remaining`
     }
 
@@ -216,7 +268,7 @@ export function QTTFaucet() {
             {/* Claim Button */}
             <button
                 onClick={handleClaim}
-                disabled={!canClaim || isClaiming}
+                disabled={!canClaim || isPending || isConfirming}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3
           bg-gradient-to-r from-green-600 to-emerald-600
           hover:from-green-700 hover:to-emerald-700
@@ -225,10 +277,10 @@ export function QTTFaucet() {
           disabled:opacity-50 disabled:cursor-not-allowed
           shadow-lg hover:shadow-xl"
             >
-                {isClaiming ? (
+                {(isPending || isConfirming) ? (
                     <>
                         <RefreshCw size={18} className="animate-spin" />
-                        Claiming...
+                        {isPending ? 'Confirm in Wallet...' : 'Claiming...'}
                     </>
                 ) : (
                     <>

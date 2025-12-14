@@ -1,6 +1,6 @@
 import { createConfig, http } from 'wagmi'
 import { mainnet, sepolia, localhost } from 'wagmi/chains'
-import { injected, metaMask, walletConnect } from 'wagmi/connectors'
+import { injected } from 'wagmi/connectors'
 import type { Chain } from 'wagmi/chains'
 import { QIE_TESTNET_CHAIN_ID, QIE_TESTNET_RPC, QIE_TESTNET_EXPLORER } from './networkConstants'
 
@@ -30,11 +30,7 @@ export const qieTestnet = {
 export const config = createConfig({
   chains: [qieTestnet, sepolia, localhost, mainnet], // ✅ QIE testnet as primary chain
   connectors: [
-    injected(),
-    metaMask(),
-    walletConnect({
-      projectId: 'd17eff2bad7d6dda74ac8a49784a4cca' // Get from https://walletconnect.com
-    }),
+    injected(), // ✅ Works with MetaMask, Brave Wallet, and other injected providers
   ],
   transports: {
     [qieTestnet.id]: http(),

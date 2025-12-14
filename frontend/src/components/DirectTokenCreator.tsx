@@ -24,12 +24,8 @@ export default function DirectTokenCreator() {
 
     const [createdTokenAddress, setCreatedTokenAddress] = useState<string>('')
     const [error, setError] = useState<string>('')
-<<<<<<< HEAD
-
-=======
     const [copied, setCopied] = useState(false)
-    
->>>>>>> 43889b0a107e431968930f93535a0146a3a3fea0
+
     const { data: hash, isPending, writeContract, reset } = useWriteContract()
 
     const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
@@ -109,10 +105,7 @@ export default function DirectTokenCreator() {
             decimals: 18
         })
     }
-<<<<<<< HEAD
 
-=======
-    
     const handleCopyAddress = () => {
         if (createdTokenAddress) {
             navigator.clipboard.writeText(createdTokenAddress)
@@ -120,8 +113,7 @@ export default function DirectTokenCreator() {
             setTimeout(() => setCopied(false), 2000)
         }
     }
-    
->>>>>>> 43889b0a107e431968930f93535a0146a3a3fea0
+
     if (!isConnected) {
         return (
             <div className="text-center py-12">
@@ -136,20 +128,20 @@ export default function DirectTokenCreator() {
         if (!createdTokenAddress) return
 
         try {
-            const wasAdded = await window.ethereum?.request({
-                method: 'wallet_watchAsset',
-                params: {
-                    type: 'ERC20',
-                    options: {
-                        address: createdTokenAddress,
-                        symbol: tokenParams.symbol,
-                        decimals: tokenParams.decimals,
+            // Use the EIP-747 standard to add token to wallet
+            // This works with MetaMask and other compatible wallets
+            if (typeof window !== 'undefined' && window.ethereum) {
+                await window.ethereum.request({
+                    method: 'wallet_watchAsset',
+                    params: {
+                        type: 'ERC20',
+                        options: {
+                            address: createdTokenAddress,
+                            symbol: tokenParams.symbol,
+                            decimals: tokenParams.decimals,
+                        },
                     },
-                },
-            })
-
-            if (wasAdded) {
-                console.log('Token added to wallet!')
+                })
             }
         } catch (error) {
             console.error('Error adding token to wallet:', error)

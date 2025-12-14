@@ -1,8 +1,7 @@
-import { useState } from 'react'
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { parseUnits, formatUnits } from 'viem'
 import { SIMPLE_DEX_ADDRESS } from '../config/networkConstants'
-import { Check, X, AlertCircle, Loader2, ExternalLink } from 'lucide-react'
+import { Check, X, AlertCircle, Loader2 } from 'lucide-react'
 
 const ERC20_ABI = [
   {
@@ -43,15 +42,13 @@ interface TokenApprovalHelperProps {
 
 export default function TokenApprovalHelper({ tokenAddress, amount, tokenSymbol = 'Token' }: TokenApprovalHelperProps) {
   const { address } = useAccount()
-  const [isApproving, setIsApproving] = useState(false)
 
   // Check current allowance
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: tokenAddress as `0x${string}`,
     abi: ERC20_ABI,
     functionName: 'allowance',
-    args: address ? [address, SIMPLE_DEX_ADDRESS] : undefined,
-    query: { enabled: !!address && !!tokenAddress }
+    args: address ? [address, SIMPLE_DEX_ADDRESS] : undefined
   })
 
   // Check balance
@@ -59,17 +56,18 @@ export default function TokenApprovalHelper({ tokenAddress, amount, tokenSymbol 
     address: tokenAddress as `0x${string}`,
     abi: ERC20_ABI,
     functionName: 'balanceOf',
-    args: address ? [address] : undefined,
-    query: { enabled: !!address && !!tokenAddress }
+    args: address ? [address] : undefined
   })
 
   const { data: hash, isPending, writeContract } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ 
-    hash,
-    onSuccess: () => {
-      refetchAllowance()
-    }
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash
   })
+
+  // Refetch allowance when transaction succeeds
+  if (isSuccess) {
+    refetchAllowance()
+  }
 
   const amountBigInt = amount ? parseUnits(amount, 18) : 0n
   const isApproved = allowance ? allowance >= amountBigInt : false
@@ -77,7 +75,6 @@ export default function TokenApprovalHelper({ tokenAddress, amount, tokenSymbol 
 
   const handleApprove = async () => {
     try {
-      setIsApproving(true)
       writeContract({
         address: tokenAddress as `0x${string}`,
         abi: ERC20_ABI,
@@ -86,8 +83,6 @@ export default function TokenApprovalHelper({ tokenAddress, amount, tokenSymbol 
       })
     } catch (error) {
       console.error('Approval error:', error)
-    } finally {
-      setIsApproving(false)
     }
   }
 
