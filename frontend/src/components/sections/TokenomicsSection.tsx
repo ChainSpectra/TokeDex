@@ -4,7 +4,7 @@ import Container from '../layout/Container';
 import Badge from '../ui/Badge';
 import Card from '../ui/Card';
 import FadeIn from '../animations/FadeIn';
-import SlideIn from '../animations/SlideIn';
+
 
 const TokenomicsSection: React.FC = () => {
   const benefits = [
@@ -94,20 +94,20 @@ const TokenomicsSection: React.FC = () => {
             const Icon = benefit.icon;
             return (
               <FadeIn key={benefit.title} delay={0.1 * index}>
-                <Card 
-                  variant="glass" 
+                <Card
+                  variant="glass"
                   className="p-6 h-full hover-lift group transition-all duration-300"
                 >
                   {/* Icon with glow effect */}
-                  <div 
+                  <div
                     className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
-                    style={{ 
+                    style={{
                       backgroundColor: `${benefit.color}20`,
                       boxShadow: `0 0 20px ${benefit.color}40`
                     }}
                   >
-                    <Icon 
-                      className="w-7 h-7" 
+                    <Icon
+                      className="w-7 h-7"
                       style={{ color: benefit.color }}
                     />
                   </div>
@@ -125,7 +125,7 @@ const TokenomicsSection: React.FC = () => {
                   {/* Stat Badge */}
                   <div className="pt-4 border-t border-white/10">
                     <div className="flex items-baseline gap-2">
-                      <span 
+                      <span
                         className="text-2xl font-bold"
                         style={{ color: benefit.color }}
                       >

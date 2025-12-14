@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, usePublicClient } from 'wagmi'
-import { parseUnits } from 'viem'
+
 import { TOKEN_FACTORY_ADDRESS, TOKEN_FACTORY_ABI, QIE_TESTNET_EXPLORER } from '../config/networkConstants'
 import { CheckCircle, Loader2, AlertCircle, ExternalLink } from 'lucide-react'
 
@@ -12,36 +12,36 @@ interface TokenParams {
 }
 
 export default function DirectTokenCreator() {
-    const { address, isConnected } = useAccount()
+    const { isConnected } = useAccount()
     const publicClient = usePublicClient()
-    
+
     const [tokenParams, setTokenParams] = useState<TokenParams>({
         name: '',
         symbol: '',
         initialSupply: '1000000',
         decimals: 18
     })
-    
+
     const [createdTokenAddress, setCreatedTokenAddress] = useState<string>('')
     const [error, setError] = useState<string>('')
-    
+
     const { data: hash, isPending, writeContract, reset } = useWriteContract()
-    
+
     const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
         hash,
     })
-    
+
     const handleCreateToken = async () => {
         if (!isConnected) {
             setError('Please connect your wallet first')
             return
         }
-        
+
         if (!tokenParams.name || !tokenParams.symbol || !tokenParams.initialSupply) {
             setError('Please fill in all fields')
             return
         }
-        
+
         try {
             setError('')
             writeContract({
@@ -59,14 +59,14 @@ export default function DirectTokenCreator() {
             setError(err.message || 'Failed to create token')
         }
     }
-    
+
     // When transaction is confirmed, get the token address from event
     const getCreatedTokenAddress = async () => {
         if (!hash || !publicClient) return
-        
+
         try {
             const receipt = await publicClient.getTransactionReceipt({ hash })
-            
+
             // Find TokenCreated event
             const tokenCreatedLog = receipt.logs.find(log => {
                 try {
@@ -76,7 +76,7 @@ export default function DirectTokenCreator() {
                     return false
                 }
             })
-            
+
             if (tokenCreatedLog && tokenCreatedLog.topics[1]) {
                 // The token address is the first indexed parameter (topics[1])
                 const tokenAddress = '0x' + tokenCreatedLog.topics[1].slice(26)
@@ -86,12 +86,12 @@ export default function DirectTokenCreator() {
             console.error('Error getting token address:', err)
         }
     }
-    
+
     // Auto-fetch token address when transaction succeeds
     if (isSuccess && hash && !createdTokenAddress) {
         getCreatedTokenAddress()
     }
-    
+
     const handleReset = () => {
         reset()
         setCreatedTokenAddress('')
@@ -103,7 +103,7 @@ export default function DirectTokenCreator() {
             decimals: 18
         })
     }
-    
+
     if (!isConnected) {
         return (
             <div className="text-center py-12">
@@ -113,10 +113,10 @@ export default function DirectTokenCreator() {
             </div>
         )
     }
-    
+
     const handleAddToWallet = async () => {
         if (!createdTokenAddress) return
-        
+
         try {
             const wasAdded = await window.ethereum?.request({
                 method: 'wallet_watchAsset',
@@ -129,7 +129,7 @@ export default function DirectTokenCreator() {
                     },
                 },
             })
-            
+
             if (wasAdded) {
                 console.log('Token added to wallet!')
             }
@@ -137,14 +137,14 @@ export default function DirectTokenCreator() {
             console.error('Error adding token to wallet:', error)
         }
     }
-    
+
     if (isSuccess && createdTokenAddress) {
         return (
             <div className="text-center py-12">
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                 <h3 className="text-2xl font-bold mb-2">Token Created Successfully!</h3>
                 <p className="text-gray-400 mb-6">Your token has been deployed to QIE Testnet</p>
-                
+
                 <div className="bg-gray-800/50 rounded-lg p-6 mb-6 max-w-2xl mx-auto">
                     <div className="grid gap-4 text-left">
                         <div>
@@ -174,7 +174,7 @@ export default function DirectTokenCreator() {
                             </a>
                         </div>
                     </div>
-                    
+
                     {/* Important Notice */}
                     <div className="mt-4 bg-yellow-500/10 border border-yellow-500/50 rounded-lg p-4">
                         <p className="text-yellow-400 text-sm font-semibold mb-2">⚠️ Token Not Visible?</p>
@@ -183,7 +183,7 @@ export default function DirectTokenCreator() {
                         </p>
                     </div>
                 </div>
-                
+
                 <div className="flex gap-4 justify-center">
                     <button
                         onClick={handleAddToWallet}
@@ -201,22 +201,22 @@ export default function DirectTokenCreator() {
             </div>
         )
     }
-    
+
     return (
         <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold mb-2 text-center">Create Your Token</h2>
             <p className="text-gray-400 mb-4 text-center">
                 Deploy your own ERC20 token on QIE Testnet in seconds
             </p>
-            
+
             {/* Info Banner */}
             <div className="mb-6 bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
                 <p className="text-blue-300 text-sm">
-                    💡 <strong>Note:</strong> The "100 QieTestnet" tokens you see are QIE (gas tokens). 
+                    💡 <strong>Note:</strong> The "100 QieTestnet" tokens you see are QIE (gas tokens).
                     Your custom token (like TDX) will appear after you <strong>add it to your wallet</strong> using the button after creation.
                 </p>
             </div>
-            
+
             <div className="bg-gray-800/50 rounded-lg p-6 space-y-6">
                 <div>
                     <label className="block text-sm font-medium mb-2">Token Name</label>
@@ -229,7 +229,7 @@ export default function DirectTokenCreator() {
                         disabled={isPending || isConfirming}
                     />
                 </div>
-                
+
                 <div>
                     <label className="block text-sm font-medium mb-2">Token Symbol</label>
                     <input
@@ -241,7 +241,7 @@ export default function DirectTokenCreator() {
                         disabled={isPending || isConfirming}
                     />
                 </div>
-                
+
                 <div>
                     <label className="block text-sm font-medium mb-2">Initial Supply</label>
                     <input
@@ -256,7 +256,7 @@ export default function DirectTokenCreator() {
                         Total supply that will be minted to your wallet
                     </p>
                 </div>
-                
+
                 <div>
                     <label className="block text-sm font-medium mb-2">Decimals</label>
                     <select
@@ -271,14 +271,14 @@ export default function DirectTokenCreator() {
                         <option value={0}>0 (Whole numbers only)</option>
                     </select>
                 </div>
-                
+
                 {error && (
                     <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex items-center gap-3">
                         <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                         <p className="text-red-400 text-sm">{error}</p>
                     </div>
                 )}
-                
+
                 {hash && (
                     <div className="bg-blue-500/10 border border-blue-500/50 rounded-lg p-4">
                         <p className="text-sm text-gray-400 mb-2">Transaction Hash:</p>
@@ -293,7 +293,7 @@ export default function DirectTokenCreator() {
                         </a>
                     </div>
                 )}
-                
+
                 <button
                     onClick={handleCreateToken}
                     disabled={isPending || isConfirming}
@@ -313,7 +313,7 @@ export default function DirectTokenCreator() {
                     )}
                     {!isPending && !isConfirming && 'Create Token'}
                 </button>
-                
+
                 <p className="text-xs text-gray-500 text-center">
                     Gas fees will be paid in QIE. Make sure you have enough QIE in your wallet.
                 </p>

@@ -35,11 +35,16 @@ export function QTTFaucet() {
     const [isRefreshing, setIsRefreshing] = useState(false)
 
     // Check if contracts are deployed
-    const contractsDeployed = QTT_TOKEN_ADDRESS !== "0x0000000000000000000000000000000000000000"
+    const contractsDeployed = QTT_TOKEN_ADDRESS !== "0x0000000000000000000000000000000000000000";
 
     // Fetch user balance and faucet status
     const fetchData = async () => {
         if (!address || !contractsDeployed || chainId !== QIE_TESTNET_CHAIN_ID) return
+
+        if (!window.ethereum) {
+            console.warn('Web3 wallet not available')
+            return
+        }
 
         try {
             const provider = new ethers.BrowserProvider(window.ethereum)
@@ -77,6 +82,11 @@ export function QTTFaucet() {
 
     const handleClaim = async () => {
         if (!address || !canClaim) return
+
+        if (!window.ethereum) {
+            showNotification('Please install MetaMask or another Web3 wallet', 'error')
+            return
+        }
 
         setIsClaiming(true)
         try {
@@ -183,8 +193,8 @@ export function QTTFaucet() {
 
             {/* Status */}
             <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${canClaim
-                    ? 'bg-green-500/10 border border-green-500/30'
-                    : 'bg-orange-500/10 border border-orange-500/30'
+                ? 'bg-green-500/10 border border-green-500/30'
+                : 'bg-orange-500/10 border border-orange-500/30'
                 }`}>
                 {canClaim ? (
                     <>

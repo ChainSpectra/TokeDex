@@ -108,7 +108,7 @@ const RoadmapSection: React.FC = () => {
           <div className="absolute left-12 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-cyan via-primary-purple to-primary-pink" />
 
           <div className="space-y-12">
-            {setupSteps.map((step, index) => (
+            {setupSteps.map((step) => (
               <div key={step.step} className="flex gap-8">
                 {/* Timeline Dot */}
                 <div className="relative flex-shrink-0">
@@ -129,11 +129,13 @@ const RoadmapSection: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <div className="absolute -inset-0.5 bg-gradient-to-r opacity-0 group-hover:opacity-100 blur transition duration-500 rounded-3xl"
-                    style={{ background: `linear-gradient(135deg, ${step.color.includes('cyan') ? '#22d3ee, #3b82f6' : 
-                      step.color.includes('purple') ? '#c084fc, #ec4899' :
-                      step.color.includes('green') ? '#4ade80, #10b981' :
-                      step.color.includes('yellow') ? '#facc15, #f97316' :
-                      '#f472b6, #fb7185'})` }}
+                    style={{
+                      background: `linear-gradient(135deg, ${step.color.includes('cyan') ? '#22d3ee, #3b82f6' :
+                        step.color.includes('purple') ? '#c084fc, #ec4899' :
+                          step.color.includes('green') ? '#4ade80, #10b981' :
+                            step.color.includes('yellow') ? '#facc15, #f97316' :
+                              '#f472b6, #fb7185'})`
+                    }}
                   ></div>
 
                   <Card className="relative bg-gradient-to-br from-dark-800/90 to-dark-900/90 backdrop-blur-xl border border-gray-800 group-hover:border-transparent transition-all duration-500">
@@ -143,11 +145,11 @@ const RoadmapSection: React.FC = () => {
                         {step.step}
                       </span>
                     </div>
-                    
+
                     <ul className="space-y-3">
                       {step.items.map((item) => (
-                        <li 
-                          key={item} 
+                        <li
+                          key={item}
                           className="flex items-start gap-3 text-gray-300"
                         >
                           <div className="w-5 h-5 rounded-full bg-primary-cyan/20 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -160,11 +162,13 @@ const RoadmapSection: React.FC = () => {
 
                     {/* Bottom Accent */}
                     <div className="absolute bottom-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{ background: `linear-gradient(90deg, transparent, ${step.color.includes('cyan') ? '#22d3ee' : 
-                        step.color.includes('purple') ? '#c084fc' :
-                        step.color.includes('green') ? '#4ade80' :
-                        step.color.includes('yellow') ? '#facc15' :
-                        '#f472b6'}, transparent)` }}
+                      style={{
+                        background: `linear-gradient(90deg, transparent, ${step.color.includes('cyan') ? '#22d3ee' :
+                          step.color.includes('purple') ? '#c084fc' :
+                            step.color.includes('green') ? '#4ade80' :
+                              step.color.includes('yellow') ? '#facc15' :
+                                '#f472b6'}, transparent)`
+                      }}
                     ></div>
                   </Card>
                 </motion.div>
@@ -175,7 +179,7 @@ const RoadmapSection: React.FC = () => {
 
         {/* Mobile Timeline */}
         <div className="lg:hidden space-y-8">
-          {setupSteps.map((step, index) => (
+          {setupSteps.map((step) => (
             <motion.div
               key={step.step}
               className="group relative"
@@ -183,11 +187,13 @@ const RoadmapSection: React.FC = () => {
               transition={{ duration: 0.3 }}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r opacity-0 group-hover:opacity-100 blur-sm transition duration-500 rounded-2xl"
-                style={{ background: `linear-gradient(135deg, ${step.color.includes('cyan') ? '#22d3ee, #3b82f6' : 
-                  step.color.includes('purple') ? '#c084fc, #ec4899' :
-                  step.color.includes('green') ? '#4ade80, #10b981' :
-                  step.color.includes('yellow') ? '#facc15, #f97316' :
-                  '#f472b6, #fb7185'})` }}
+                style={{
+                  background: `linear-gradient(135deg, ${step.color.includes('cyan') ? '#22d3ee, #3b82f6' :
+                    step.color.includes('purple') ? '#c084fc, #ec4899' :
+                      step.color.includes('green') ? '#4ade80, #10b981' :
+                        step.color.includes('yellow') ? '#facc15, #f97316' :
+                          '#f472b6, #fb7185'})`
+                }}
               ></div>
 
               <Card className="relative bg-gradient-to-br from-dark-800/90 to-dark-900/90 backdrop-blur-xl border border-gray-800 group-hover:border-transparent transition-all duration-500">
@@ -205,11 +211,11 @@ const RoadmapSection: React.FC = () => {
                     <span className="text-sm text-primary-cyan font-semibold">{step.step}</span>
                   </div>
                 </div>
-                
+
                 <ul className="space-y-3">
                   {step.items.map((item) => (
-                    <li 
-                      key={item} 
+                    <li
+                      key={item}
                       className="flex items-start gap-3 text-sm text-gray-300 group-hover:text-white transition-colors"
                     >
                       <div className="w-5 h-5 rounded-full bg-primary-cyan/20 flex items-center justify-center flex-shrink-0 mt-0.5">

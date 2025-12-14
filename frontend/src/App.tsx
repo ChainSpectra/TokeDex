@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HeroSection from './components/sections/HeroSection';
@@ -18,7 +18,7 @@ function App() {
   return (
     <div className="min-h-screen bg-dark-900 text-white overflow-x-hidden">
       <Navbar />
-      
+
       <main>
         <HeroSection />
         <Suspense fallback={
@@ -32,7 +32,7 @@ function App() {
               <MyTokensDashboard />
             </div>
           </section>
-          
+
           <FeaturesSection />
           <TokenCreationSection />
           <ArchitectureSection />
