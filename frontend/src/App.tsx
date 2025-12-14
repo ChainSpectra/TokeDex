@@ -4,6 +4,7 @@ import Footer from './components/layout/Footer';
 import HeroSection from './components/sections/HeroSection';
 import MyTokensDashboard from './components/MyTokensDashboard';
 import AssetNFTCreator from './components/AssetNFTCreator';
+import MyAssets from './components/MyAssets';
 
 // Lazy load heavy sections
 const FeaturesSection = lazy(() => import('./components/sections/FeaturesSection'));
@@ -37,6 +38,13 @@ function App() {
           <section id="mint-nft" className="section-padding bg-gradient-to-b from-dark-900 to-dark-800">
             <div className="container-custom">
               <AssetNFTCreator />
+            </div>
+          </section>
+
+          {/* My Assets Gallery - Phase 3.8 */}
+          <section id="my-assets" className="section-padding bg-dark-800/50">
+            <div className="container-custom">
+              <MyAssets />
             </div>
           </section>
 
