@@ -6,6 +6,8 @@ export * as testTokenSol from "./Test_Token.sol";
 export * as tokenFactorySol from "./TokenFactory.sol";
 export { AssetNFT__factory } from "./AssetNFT__factory";
 export { Counter__factory } from "./Counter__factory";
+export { FractionToken__factory } from "./FractionToken__factory";
+export { FractionalVault__factory } from "./FractionalVault__factory";
 export { QuickTestToken__factory } from "./QuickTestToken__factory";
 export { SimpleDEX__factory } from "./SimpleDEX__factory";
 export { TokenFaucet__factory } from "./TokenFaucet__factory";

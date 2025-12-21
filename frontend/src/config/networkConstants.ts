@@ -100,6 +100,9 @@ export const SIMPLE_DEX_ADDRESS = '0xe6E42ee1E5e8BB0dc947fC40079ae22370200048' a
 // AssetNFT Contract (Deployed - Phase 3.2)
 export const ASSET_NFT_ADDRESS = '0x644C20e6EA41840612960cdeF6138aa3D397C073' as const
 
+// FractionalVault Contract (Deployed - Phase 3.4)
+export const FRACTIONAL_VAULT_ADDRESS = '0xEd94E60E0c75aCBc91d15E9e6B296E82F96D239d' as const
+
 // SimpleDEX ABI
 export const SIMPLE_DEX_ABI = [
   {
@@ -262,3 +265,6 @@ export const SIMPLE_DEX_ABI = [
     "type": "function"
   }
 ] as const
+
+// FractionalVault ABI
+export { FRACTIONAL_VAULT_ABI } from './fractionalVault_ABI'

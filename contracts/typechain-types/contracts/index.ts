@@ -9,6 +9,8 @@ import type * as tokenFactorySol from "./TokenFactory.sol";
 export type { tokenFactorySol };
 export type { AssetNFT } from "./AssetNFT";
 export type { Counter } from "./Counter";
+export type { FractionToken } from "./FractionToken";
+export type { FractionalVault } from "./FractionalVault";
 export type { QuickTestToken } from "./QuickTestToken";
 export type { SimpleDEX } from "./SimpleDEX";
 export type { TokenFaucet } from "./TokenFaucet";

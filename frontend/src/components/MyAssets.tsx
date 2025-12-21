@@ -40,7 +40,13 @@ function AssetNFTCard({ tokenId }: AssetNFTCardProps) {
     if (isError || !metadata) return null
 
     try {
-        const [name, description, assetType, imageHashes, , , appraisalValue, , isVerified] = metadata as any[]
+        // Ensure metadata is an array before destructuring
+        if (!Array.isArray(metadata)) {
+            console.error('Metadata is not an array:', metadata)
+            return null
+        }
+
+        const [name, description, assetType, imageHashes, , , appraisalValue, , isVerified] = metadata
         const firstImageHash = imageHashes?.[0] || ''
         const isOwner = owner?.toLowerCase() === address?.toLowerCase()
 

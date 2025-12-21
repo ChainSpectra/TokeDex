@@ -94,6 +94,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Counter__factory>;
     getContractFactory(
+      name: "FractionalVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FractionalVault__factory>;
+    getContractFactory(
+      name: "FractionToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FractionToken__factory>;
+    getContractFactory(
       name: "ProjectCoin",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ProjectCoin__factory>;
@@ -223,6 +231,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Counter>;
     getContractAt(
+      name: "FractionalVault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FractionalVault>;
+    getContractAt(
+      name: "FractionToken",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FractionToken>;
+    getContractAt(
       name: "ProjectCoin",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -339,6 +357,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Counter>;
     deployContract(
+      name: "FractionalVault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FractionalVault>;
+    deployContract(
+      name: "FractionToken",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FractionToken>;
+    deployContract(
       name: "ProjectCoin",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ProjectCoin>;
@@ -467,6 +493,16 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Counter>;
+    deployContract(
+      name: "FractionalVault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FractionalVault>;
+    deployContract(
+      name: "FractionToken",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FractionToken>;
     deployContract(
       name: "ProjectCoin",
       args: any[],

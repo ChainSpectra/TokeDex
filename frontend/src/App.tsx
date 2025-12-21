@@ -5,6 +5,7 @@ import HeroSection from './components/sections/HeroSection';
 import MyTokensDashboard from './components/MyTokensDashboard';
 import AssetNFTCreator from './components/AssetNFTCreator';
 import MyAssets from './components/MyAssets';
+import FractionalizationUI from './components/FractionalizationUI';
 
 // Lazy load heavy sections
 const FeaturesSection = lazy(() => import('./components/sections/FeaturesSection'));
@@ -45,6 +46,13 @@ function App() {
           <section id="my-assets" className="section-padding bg-dark-800/50">
             <div className="container-custom">
               <MyAssets />
+            </div>
+          </section>
+
+          {/* Fractionalization - Phase 3.4 */}
+          <section id="fractionalize" className="section-padding bg-gradient-to-b from-dark-900 to-dark-800">
+            <div className="container-custom">
+              <FractionalizationUI />
             </div>
           </section>
 
