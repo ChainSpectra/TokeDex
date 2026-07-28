@@ -253,7 +253,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 | Name | GitHub |
 |------|--------|
-| Aadhesh N| [@aadesh](https://github.com/Aadesh1106Aadesh1106) |
+| Aadhesh N| [@aadesh](https://github.com/Aadesh1106) |
 | Karthik Mallareddy | [@karthikmallareddy](https://github.com/KarthikMallareddy) |
 | Hari Prasath K | [@hariPrasathK-Dev](https://github.com/hariPrasathK-Dev) |
 
