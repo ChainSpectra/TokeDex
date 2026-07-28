@@ -5,7 +5,7 @@ A full-stack Web3 application for creating, managing, and trading ERC20 tokens o
 ---
 Demo VideoLink as requested by QIE Blockchain Hackathon : https://youtu.be/3n-PIS4Vhdk
 
-## 🌟 Features
+## Features
 
 ### Token Creation & Management
 - **Direct Token Creation**: Deploy custom ERC20 tokens instantly using our TokenFactory contract
@@ -27,7 +27,7 @@ Demo VideoLink as requested by QIE Blockchain Hackathon : https://youtu.be/3n-PI
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 ### Smart Contracts (`/contracts`)
 - **Solidity** `^0.8.30`
@@ -47,7 +47,7 @@ Demo VideoLink as requested by QIE Blockchain Hackathon : https://youtu.be/3n-PI
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 TokeDex/
@@ -83,7 +83,7 @@ TokeDex/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js v18+ and npm
@@ -136,7 +136,7 @@ Visit the QIE Faucet: https://www.qie.digital/faucet
 
 ---
 
-## 💡 Usage
+## Usage
 
 ### Creating a Token
 1. Connect your wallet to QIE Testnet
@@ -159,7 +159,7 @@ Visit the QIE Faucet: https://www.qie.digital/faucet
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - **[How to Use TokeDex](./HOW_TO_USE_TOKEDEX.md)** - Complete user guide
 - **[Direct Token Creation](./DIRECT_TOKEN_CREATION.md)** - Token creation details
@@ -167,7 +167,7 @@ Visit the QIE Faucet: https://www.qie.digital/faucet
 
 ---
 
-## 🔗 Important Links
+## Important Links
 
 - **Live App**: https://tokedex.vercel.app (or your deployment)
 - **QIE Testnet Explorer**: https://testnet.qie.digital
@@ -177,7 +177,7 @@ Visit the QIE Faucet: https://www.qie.digital/faucet
 
 ---
 
-## 🛠️ Development
+## Development
 
 ### Environment Variables
 
@@ -205,7 +205,7 @@ npm run build
 
 ---
 
-## 🎯 Key Features Explained
+## Key Features Explained
 
 ### TokenFactory
 - Deploys separate ERC20 contracts for each token
@@ -228,7 +228,7 @@ npm run build
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -240,13 +240,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📄 License
-
-This project is part of the ChainSpectra ecosystem.
-
----
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built on QIE Blockchain
 - Powered by OpenZeppelin contracts
@@ -255,5 +249,13 @@ This project is part of the ChainSpectra ecosystem.
 
 ---
 
-**Ready to tokenize your business? Start creating tokens on TokeDex!** 🚀
+## Team
+
+| Name | GitHub |
+|------|--------|
+| Aadhesh N| [@a-anuj](https://github.com/Aadesh1106Aadesh1106) |
+| Karthik Mallareddy | [@harish1604](https://github.com/KarthikMallareddy) |
+| Hari Prasath K | [@hariPrasathK-Dev](https://github.com/hariPrasathK-Dev) |
+
+**Ready to tokenize your business? Start creating tokens on TokeDex!**
 
