@@ -253,8 +253,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 | Name | GitHub |
 |------|--------|
-| Aadhesh N| [@a-anuj](https://github.com/Aadesh1106Aadesh1106) |
-| Karthik Mallareddy | [@harish1604](https://github.com/KarthikMallareddy) |
+| Aadhesh N| [@aadesh](https://github.com/Aadesh1106Aadesh1106) |
+| Karthik Mallareddy | [@karthikmallareddy](https://github.com/KarthikMallareddy) |
 | Hari Prasath K | [@hariPrasathK-Dev](https://github.com/hariPrasathK-Dev) |
 
 **Ready to tokenize your business? Start creating tokens on TokeDex!**
